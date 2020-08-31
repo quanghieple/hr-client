@@ -62,20 +62,20 @@ export async function signOutUser() {
     .catch(/* error */);
 }
 
-// export async function checkLoginState() {
-//   // eslint-disable-next-line compat/compat
-//   return new Promise((resolve /* , reject */) => {
-//     firebase.auth().onAuthStateChanged(user => {
-//       if (user) {
-//         resolve({
-//           ...user,
-//           login: true,
-//         });
-//       } else {
-//         resolve({
-//           login: false,
-//         });
-//       }
-//     });
-//   });
-// }
+export async function checkLoginState() {
+  // eslint-disable-next-line compat/compat
+  return new Promise((resolve /* , reject */) => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        resolve({
+          ...user,
+          login: true,
+        });
+      } else {
+        resolve({
+          login: false,
+        });
+      }
+    });
+  });
+}
