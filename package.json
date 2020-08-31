@@ -51,6 +51,7 @@
     "@ant-design/pro-table": "^2.5.13",
     "antd": "^4.5.3",
     "classnames": "^2.2.6",
+    "dva": "^2.4.1",
     "firebase": "^7.19.1",
     "lodash": "^4.17.11",
     "moment": "^2.25.3",

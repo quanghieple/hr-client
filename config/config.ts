@@ -71,16 +71,11 @@ export default defineConfig({
               ],
             },
             {
-              name: 'list.table-list',
-              icon: 'table',
-              path: '/list',
-              component: './ListTableList',
-            },
-            {
               name: 'account.settings',
               icon: 'smile',
               path: '/account',
               component: './AccountSettings',
+              authority: ['admin', 'user'],
             },
             {
               component: './404',

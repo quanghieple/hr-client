@@ -35,12 +35,16 @@ const Model: LoginModelType = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(signInUser, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.ok) {
+        yield put({
+          type: 'changeLoginStatus',
+          payload: {
+            status: true,
+            currentAuthority: 'user',
+          },
+        });
+        reloadAuthorized();
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params as { redirect: string };
@@ -77,7 +81,7 @@ const Model: LoginModelType = {
             search: stringify({
               redirect: window.location.href,
             }),
-          })
+          }),
         );
       }
     },
