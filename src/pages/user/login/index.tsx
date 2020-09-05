@@ -31,7 +31,7 @@ const LoginMessage: React.FC<{
 
 const Login: React.FC<LoginProps> = (props) => {
   const { userLogin = {}, submitting } = props;
-  const { status, type: loginType } = userLogin;
+  const { status, errorMessage, type: loginType} = userLogin;
   const [autoLogin, setAutoLogin] = useState(true);
   const [type, setType] = useState<string>('account');
 
@@ -46,8 +46,8 @@ const Login: React.FC<LoginProps> = (props) => {
     <div className={styles.main}>
       <LoginForm activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
         <Tab key="account" tab={formatMessage({ id: 'login.label.email-login' })}>
-          {status === 'error' && loginType === 'account' && !submitting && (
-            <LoginMessage content="账户或密码错误（admin/ant.design）" />
+          {status === 'error' && loginType === 'account' && !submitting && errorMessage &&(
+            <LoginMessage content={errorMessage} />
           )}
 
           <UserName
@@ -71,6 +71,7 @@ const Login: React.FC<LoginProps> = (props) => {
             ]}
           />
         </Tab>
+{/*         
         <Tab key="mobile" tab={formatMessage({ id: 'login.label.phone-login' })}>
           {status === 'error' && loginType === 'mobile' && !submitting && (
             <LoginMessage content="验证码错误" />
@@ -103,6 +104,7 @@ const Login: React.FC<LoginProps> = (props) => {
             ]}
           />
         </Tab>
+         */}
         <div>
           <Checkbox checked={autoLogin} onChange={(e) => setAutoLogin(e.target.checked)}>
             <FormattedMessage id="login.label.remember-pass" />
@@ -123,9 +125,9 @@ const Login: React.FC<LoginProps> = (props) => {
           <AlipayCircleOutlined className={styles.icon} />
           <TaobaoCircleOutlined className={styles.icon} />
           <WeiboCircleOutlined className={styles.icon} />
-          <Link className={styles.register} to="/user/register">
+          {/* <Link className={styles.register} to="/user/register">
             <FormattedMessage id="login.label.register" />
-          </Link>
+          </Link> */}
         </div>
       </LoginForm>
     </div>

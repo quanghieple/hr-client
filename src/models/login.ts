@@ -6,10 +6,12 @@ import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { signInUser, signOutUser } from '@/services/auth';
 import { reloadAuthorized } from '@/utils/Authorized';
+import { queryCurrent } from '@/services/user';
 
 export interface StateType {
   status?: 'ok' | 'error';
   type?: string;
+  errorMessage?: string;
   currentAuthority?: 'user' | 'guest' | 'admin';
 }
 
@@ -35,14 +37,20 @@ const Model: LoginModelType = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(signInUser, payload);
+      console.log(response)
       // Login successfully
       if (response.ok) {
+        const user = yield call(queryCurrent)
         yield put({
           type: 'changeLoginStatus',
           payload: {
             status: true,
-            currentAuthority: 'user',
+            currentAuthority: user.role,
           },
+        });
+        yield put({
+          type: 'user/saveCurrentUser',
+          payload: user
         });
         reloadAuthorized();
         const urlParams = new URL(window.location.href);
@@ -61,6 +69,15 @@ const Model: LoginModelType = {
           }
         }
         history.replace(redirect || '/');
+      } else {
+        yield put({
+          type: 'changeLoginStatus',
+          payload: {
+            status: "error",
+            type: "account",
+            errorMessage: response.message
+          },
+        });
       }
     },
 
@@ -94,6 +111,7 @@ const Model: LoginModelType = {
         ...state,
         status: payload.status,
         type: payload.type,
+        errorMessage: payload.errorMessage
       };
     },
   },

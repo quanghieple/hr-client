@@ -7,9 +7,11 @@ import { ConnectState } from '@/models/connect';
 import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
 import styles from './index.less';
+import { CurrentUser } from '@/models/user';
 
 export interface GlobalHeaderRightProps extends Partial<ConnectProps>, Partial<ProSettings> {
   theme?: ProSettings['navTheme'] | 'realDark';
+  currentUser?: CurrentUser;
 }
 
 const ENVTagColor = {
@@ -19,7 +21,7 @@ const ENVTagColor = {
 };
 
 const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = (props) => {
-  const { theme, layout } = props;
+  const { theme, layout, currentUser } = props;
   let className = styles.right;
 
   if (theme === 'dark' && layout === 'top') {
@@ -51,31 +53,19 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = (props) => {
         //   //console.log('input', value);
         // }}
       />
-      <Tooltip title="使用文档">
-        <a
-          style={{
-            color: 'inherit',
-          }}
-          target="_blank"
-          href="https://pro.ant.design/docs/getting-started"
-          rel="noopener noreferrer"
-          className={styles.action}
-        >
-          <QuestionCircleOutlined />
-        </a>
-      </Tooltip>
-      <Avatar />
+      <SelectLang className={styles.action} />
+      {currentUser && <Avatar />}
       {REACT_APP_ENV && (
         <span>
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
         </span>
       )}
-      <SelectLang className={styles.action} />
     </div>
   );
 };
 
-export default connect(({ settings }: ConnectState) => ({
+export default connect(({ settings, user }: ConnectState) => ({
   theme: settings.navTheme,
   layout: settings.layout,
+  currentUser: user.currentUser,
 }))(GlobalHeaderRight);

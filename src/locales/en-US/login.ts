@@ -4,7 +4,7 @@ export default {
     'login.label.login.with': 'Login with',
     'login.label.forget-pass': 'Forget password',
     'login.label.remember-pass': 'Remember password',
-    'login.label.email-login': 'Login with email',
+    'login.label.email-login': 'Login with Email',
     'login.label.phone-login': 'Login with phone number',
     'login.placeholder.username': 'Username',
     'login.placeholder.password': 'Password',

@@ -46,13 +46,14 @@ export default defineConfig({
           routes: [
             {
               path: '/',
-              redirect: '/welcome',
+              redirect: '/dashboard',
             },
             {
-              path: '/welcome',
-              name: 'welcome',
-              icon: 'smile',
+              path: '/dashboard',
+              name: 'dashboard',
+              icon: 'dashboard',
               component: './Welcome',
+              authority: ['admin'],
             },
             {
               path: '/admin',

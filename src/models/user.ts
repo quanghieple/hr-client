@@ -5,15 +5,19 @@ import { queryCurrent, query as queryUsers } from '@/services/user';
 export interface CurrentUser {
   avatar?: string;
   name?: string;
+  email?: string;
   title?: string;
   group?: string;
-  signature?: string;
+  role?: string;
+  phone?: string;
+  address?: string;
   tags?: {
     key: string;
     label: string;
   }[];
   userid?: string;
   unreadCount?: number;
+  password?: string;
 }
 
 export interface UserModelState {

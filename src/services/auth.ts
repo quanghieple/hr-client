@@ -1,4 +1,5 @@
 import { firebase } from '@/utils/firebase';
+import { CurrentUser } from '@/models/user';
 
 // var user = firebase.auth().currentUser;
 
@@ -20,6 +21,12 @@ export async function registerUser(user: any) {
         })),
     )
     .catch(/* error */);
+}
+
+export async function saveUser(user: CurrentUser) {
+  return firebase.database().ref('users/' + user.userid).set({
+    user
+  })
 }
 
 export async function signInUser(email: any) {
@@ -64,7 +71,7 @@ export async function signOutUser() {
 
 export async function checkLoginState() {
   // eslint-disable-next-line compat/compat
-  return new Promise((resolve /* , reject */) => {
+  return new Promise<any>((resolve , reject ) => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         resolve({
