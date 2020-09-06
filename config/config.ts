@@ -104,4 +104,6 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
+  // base: '/hr-client/',
+  // publicPath: '/hr-client/',
 });

@@ -9,12 +9,16 @@ export async function query(): Promise<any> {
 export async function queryCurrent(): Promise<any> {
   return new Promise((resolve, reject) => {
     checkLoginState().then((user) => {
+      if(!user.login) {
+        resolve({login: false, message: "User is not login in"})
+      }
+
+      console.log(user);
       var userId = user.uid
       return firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
-        if(user.login) {
-          resolve(snapshot.val().user);
-        }
-        reject("User is not login in")
+        resolve({login: true, ...snapshot.val().user});
+      }).catch((err) => {
+        resolve({login: false, ...err})
       });
     })
   })

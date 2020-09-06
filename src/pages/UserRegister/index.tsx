@@ -7,6 +7,7 @@ import {
   Select,
   Button,
   Alert,
+  message,
 } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { saveUser, registerUser } from "@/services/auth";
@@ -43,13 +44,19 @@ const RegistrationForm = () => {
   const [registing, setRegisting] = useState(false)
 
   const onFinish = (user: any) => {
-    setRegisting(false)
+    setRegisting(true)
     setMessage("")
     registerUser({userName: user.email, password: user.password}).then((res) => {
       if(res.ok) {
         user.userid = res.user.uid;
         delete user.password;
         delete user.confirm;
+        saveUser(user).then((res) => {
+          console.log(res);
+          message.success(`user ${user.name} was successfully created`);
+        }).catch((err) => {
+          setMessage("Something went wrong. Please contact IT support")
+        })
       } else {
         setMessage(res.message)
       }
