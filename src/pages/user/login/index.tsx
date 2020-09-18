@@ -1,7 +1,7 @@
 import { AlipayCircleOutlined, TaobaoCircleOutlined, WeiboCircleOutlined } from '@ant-design/icons';
 import { Alert, Checkbox } from 'antd';
 import React, { useState } from 'react';
-import { Link, connect, Dispatch } from 'umi';
+import { Link, connect, Dispatch, formatMessage, FormattedMessage } from 'umi';
 import { StateType } from '@/models/login';
 import { LoginParamsType } from '@/services/login';
 import { ConnectState } from '@/models/connect';
@@ -31,7 +31,7 @@ const LoginMessage: React.FC<{
 
 const Login: React.FC<LoginProps> = (props) => {
   const { userLogin = {}, submitting } = props;
-  const { status, type: loginType } = userLogin;
+  const { status, errorMessage, type: loginType} = userLogin;
   const [autoLogin, setAutoLogin] = useState(true);
   const [type, setType] = useState<string>('account');
 
@@ -45,33 +45,34 @@ const Login: React.FC<LoginProps> = (props) => {
   return (
     <div className={styles.main}>
       <LoginForm activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
-        <Tab key="account" tab="账户密码登录">
-          {status === 'error' && loginType === 'account' && !submitting && (
-            <LoginMessage content="账户或密码错误（admin/ant.design）" />
+        <Tab key="account" tab={formatMessage({ id: 'login.label.email-login' })}>
+          {status === 'error' && loginType === 'account' && !submitting && errorMessage &&(
+            <LoginMessage content={errorMessage} />
           )}
 
           <UserName
             name="userName"
-            placeholder="用户名: admin or user"
+            placeholder={formatMessage({ id: 'login.placeholder.username' })}
             rules={[
               {
                 required: true,
-                message: '请输入用户名!',
+                message: formatMessage({ id: 'login.required.username' }),
               },
             ]}
           />
           <Password
             name="password"
-            placeholder="密码: ant.design"
+            placeholder={formatMessage({ id: 'login.placeholder.password' })}
             rules={[
               {
                 required: true,
-                message: '请输入密码！',
+                message: formatMessage({ id: 'login.required.password' }),
               },
             ]}
           />
         </Tab>
-        <Tab key="mobile" tab="手机号登录">
+{/*         
+        <Tab key="mobile" tab={formatMessage({ id: 'login.label.phone-login' })}>
           {status === 'error' && loginType === 'mobile' && !submitting && (
             <LoginMessage content="验证码错误" />
           )}
@@ -103,27 +104,30 @@ const Login: React.FC<LoginProps> = (props) => {
             ]}
           />
         </Tab>
+         */}
         <div>
           <Checkbox checked={autoLogin} onChange={(e) => setAutoLogin(e.target.checked)}>
-            自动登录
+            <FormattedMessage id="login.label.remember-pass" />
           </Checkbox>
           <a
             style={{
               float: 'right',
             }}
           >
-            忘记密码
+            <FormattedMessage id="login.label.forget-pass" />
           </a>
         </div>
-        <Submit loading={submitting}>登录</Submit>
+        <Submit loading={submitting}>
+          <FormattedMessage id="login.button.login" />
+        </Submit>
         <div className={styles.other}>
-          其他登录方式
+          <FormattedMessage id="login.label.login.with" />
           <AlipayCircleOutlined className={styles.icon} />
           <TaobaoCircleOutlined className={styles.icon} />
           <WeiboCircleOutlined className={styles.icon} />
-          <Link className={styles.register} to="/user/register">
-            注册账户
-          </Link>
+          {/* <Link className={styles.register} to="/user/register">
+            <FormattedMessage id="login.label.register" />
+          </Link> */}
         </div>
       </LoginForm>
     </div>

@@ -1,13 +1,15 @@
 import { stringify } from 'querystring';
 import { history, Reducer, Effect } from 'umi';
 
-import { fakeAccountLogin } from '@/services/login';
+import { currentUser, signInUser, signOutUser } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
+import { reloadAuthorized } from '@/utils/Authorized';
 
 export interface StateType {
   status?: 'ok' | 'error';
   type?: string;
+  errorMessage?: string;
   currentAuthority?: 'user' | 'guest' | 'admin';
 }
 
@@ -32,13 +34,22 @@ const Model: LoginModelType = {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
-      // Login successfully
-      if (response.status === 'ok') {
+      const response = yield call(signInUser, payload);
+      if (response.ok) {
+        yield put({
+          type: 'changeLoginStatus',
+          payload: {
+            status: true,
+            currentAuthority: "user",
+          },
+        });
+        let user = currentUser();
+        yield put({
+          type: 'user/saveCurrentUser',
+          payload: {...user, name: user?.email}
+        });
+        reloadAuthorized();
+        
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params as { redirect: string };
@@ -55,19 +66,31 @@ const Model: LoginModelType = {
           }
         }
         history.replace(redirect || '/');
+      } else {
+        yield put({
+          type: 'changeLoginStatus',
+          payload: {
+            status: "error",
+            type: "account",
+            errorMessage: response.message
+          },
+        });
       }
     },
 
-    logout() {
-      const { redirect } = getPageQuery();
-      // Note: There may be security issues, please note
-      if (window.location.pathname !== '/user/login' && !redirect) {
-        history.replace({
-          pathname: '/user/login',
-          search: stringify({
-            redirect: window.location.href,
-          }),
-        });
+    *logout(_, { put, call }) {
+      const response = yield call(signOutUser);
+      if (response.ok === true) {
+        reloadAuthorized();
+        const { redirect } = getPageQuery();
+        if (window.location.pathname !== '/user/login' && !redirect) {
+          history.replace({
+            pathname: '/user/login',
+            search: stringify({
+              redirect: window.location.href,
+            }),
+          });
+        }
       }
     },
   },
