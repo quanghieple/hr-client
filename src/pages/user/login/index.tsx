@@ -1,7 +1,7 @@
 import { AlipayCircleOutlined, TaobaoCircleOutlined, WeiboCircleOutlined } from '@ant-design/icons';
 import { Alert, Checkbox } from 'antd';
 import React, { useState } from 'react';
-import { Link, connect, Dispatch, formatMessage, FormattedMessage } from 'umi';
+import { connect, Dispatch, FormattedMessage, useIntl } from 'umi';
 import { StateType } from '@/models/login';
 import { LoginParamsType } from '@/services/login';
 import { ConnectState } from '@/models/connect';
@@ -9,7 +9,7 @@ import LoginForm from './components/Login';
 
 import styles from './style.less';
 
-const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginForm;
+const { Tab, UserName, Password, Submit } = LoginForm;
 interface LoginProps {
   dispatch: Dispatch;
   userLogin: StateType;
@@ -34,6 +34,7 @@ const Login: React.FC<LoginProps> = (props) => {
   const { status, errorMessage, type: loginType} = userLogin;
   const [autoLogin, setAutoLogin] = useState(true);
   const [type, setType] = useState<string>('account');
+  const intl = useIntl();
 
   const handleSubmit = (values: LoginParamsType) => {
     const { dispatch } = props;
@@ -45,34 +46,34 @@ const Login: React.FC<LoginProps> = (props) => {
   return (
     <div className={styles.main}>
       <LoginForm activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
-        <Tab key="account" tab={formatMessage({ id: 'login.label.email-login' })}>
+        <Tab key="account" tab={intl.formatMessage({ id: 'login.label.email-login' })}>
           {status === 'error' && loginType === 'account' && !submitting && errorMessage &&(
             <LoginMessage content={errorMessage} />
           )}
 
           <UserName
             name="userName"
-            placeholder={formatMessage({ id: 'login.placeholder.username' })}
+            placeholder={intl.formatMessage({ id: 'login.placeholder.username' })}
             rules={[
               {
                 required: true,
-                message: formatMessage({ id: 'login.required.username' }),
+                message: intl.formatMessage({ id: 'login.required.username' }),
               },
             ]}
           />
           <Password
             name="password"
-            placeholder={formatMessage({ id: 'login.placeholder.password' })}
+            placeholder={intl.formatMessage({ id: 'login.placeholder.password' })}
             rules={[
               {
                 required: true,
-                message: formatMessage({ id: 'login.required.password' }),
+                message: intl.formatMessage({ id: 'login.required.password' }),
               },
             ]}
           />
         </Tab>
 {/*         
-        <Tab key="mobile" tab={formatMessage({ id: 'login.label.phone-login' })}>
+        <Tab key="mobile" tab={intl.formatMessage({ id: 'login.label.phone-login' })}>
           {status === 'error' && loginType === 'mobile' && !submitting && (
             <LoginMessage content="验证码错误" />
           )}

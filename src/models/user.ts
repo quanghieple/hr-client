@@ -3,16 +3,12 @@ import { Effect, Reducer } from 'umi';
 import { queryCurrent, query as queryUsers } from '@/services/user';
 
 export interface CurrentUser {
-  avatar?: string;
-  name?: string;
-  title?: string;
-  group?: string;
-  signature?: string;
-  tags?: {
-    key: string;
-    label: string;
-  }[];
-  userid?: string;
+  displayName?: string;
+  email?: string;
+  phoneNumber?: string;
+  photoURL?: string;
+  providerId?: string;
+  uid?: string;
   unreadCount?: number;
 }
 

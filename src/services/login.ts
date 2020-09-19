@@ -8,6 +8,12 @@ export interface LoginParamsType {
   captcha: string;
 }
 
+export enum Role {
+  guest = "guest",
+  user = "user",
+  admin = "admin"
+}
+
 export async function getFakeCaptcha(mobile: string) {
   return request(`/api/login/captcha?mobile=${mobile}`);
 }
@@ -34,6 +40,21 @@ export async function registerUser(user: any) {
 
 export function currentUser() {
   return firebase.auth().currentUser
+}
+
+export async function getCurrentRole() {
+  let user = currentUser();
+  let role = Role.guest;
+  if (user != null) {
+    let idTokenResult = await user.getIdTokenResult()
+    if (!!idTokenResult.claims.admin) {
+      role = Role.admin;
+    } else {
+      role = Role.user;
+    }
+  }
+
+  return role;
 }
 
 export async function signInUser(email: any) {

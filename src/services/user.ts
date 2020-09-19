@@ -1,11 +1,20 @@
 import request from '@/utils/request';
+import { currentUser } from './login';
 
 export async function query(): Promise<any> {
   return request('/api/users');
 }
 
 export async function queryCurrent(): Promise<any> {
-  return request('/api/currentUser');
+  return new Promise((resolve, reject) => {
+    let user = currentUser()
+    console.log("user", user)
+    if (user != null) {
+      resolve(user.providerData[0])
+    } else {
+      resolve({})
+    }
+  })
 }
 
 export async function queryNotices(): Promise<any> {

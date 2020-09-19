@@ -1,7 +1,7 @@
 import { stringify } from 'querystring';
 import { history, Reducer, Effect } from 'umi';
 
-import { currentUser, signInUser, signOutUser } from '@/services/login';
+import { currentUser, getCurrentRole, signInUser, signOutUser } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
@@ -36,19 +36,19 @@ const Model: LoginModelType = {
     *login({ payload }, { call, put }) {
       const response = yield call(signInUser, payload);
       if (response.ok) {
+        let role = yield getCurrentRole();
+        console.log("role", role);
         yield put({
           type: 'changeLoginStatus',
           payload: {
             status: true,
-            currentAuthority: "user",
+            currentAuthority: role,
           },
         });
-        let user = currentUser();
         yield put({
           type: 'user/saveCurrentUser',
-          payload: {...user, name: user?.email}
+          payload: currentUser()
         });
-        reloadAuthorized();
         
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -102,6 +102,7 @@ const Model: LoginModelType = {
         ...state,
         status: payload.status,
         type: payload.type,
+        errorMessage: payload.errorMessage
       };
     },
   },
