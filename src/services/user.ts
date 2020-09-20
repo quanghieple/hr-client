@@ -6,8 +6,8 @@ export async function query(): Promise<any> {
 }
 
 export async function queryCurrent(): Promise<any> {
-  return new Promise((resolve, reject) => {
-    let user = currentUser()
+  return new Promise(async (resolve, reject) => {
+    let user = await currentUser()
     console.log("user", user)
     if (user != null) {
       resolve(user.providerData[0])

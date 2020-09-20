@@ -2,9 +2,7 @@
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
-
 const { REACT_APP_ENV } = process.env;
-
 export default defineConfig({
   hash: true,
   antd: {},
@@ -73,10 +71,17 @@ export default defineConfig({
               ],
             },
             {
-              name: 'list.table-list',
-              icon: 'table',
-              path: '/list',
-              component: './ListTableList',
+              path: '/users',
+              name: 'Users',
+              icon: 'user',
+              routes: [
+                {
+                  name: 'New User',
+                  path: '/users/create',
+                  component: './user/Registry',
+                  authority: ['admin'],
+                },
+              ],
             },
             {
               component: './404',

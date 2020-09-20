@@ -34,7 +34,7 @@ const Model: LoginModelType = {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(signInUser, payload);
+      const response = yield signInUser(payload);
       if (response.ok) {
         let role = yield getCurrentRole();
         console.log("role", role);
@@ -44,10 +44,6 @@ const Model: LoginModelType = {
             status: true,
             currentAuthority: role,
           },
-        });
-        yield put({
-          type: 'user/saveCurrentUser',
-          payload: currentUser()
         });
         
         const urlParams = new URL(window.location.href);

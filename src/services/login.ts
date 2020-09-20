@@ -18,32 +18,24 @@ export async function getFakeCaptcha(mobile: string) {
   return request(`/api/login/captcha?mobile=${mobile}`);
 }
 
-export async function registerUser(user: any) {
-  return firebase
-    .auth()
-    .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .then(() =>
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(user.userName, user.password)
-        .then((res) => ({
-          ...res,
-          ok: true,
-        }))
-        .catch((error) => ({
-          ...error,
-          ok: false,
-        })),
-    )
-    .catch(/* error */);
+export async function registerUser(newUser: any) {
+  let addAuthenUser = firebase.functions().httpsCallable("addAuthenUser")
+  return addAuthenUser({user: newUser})
 }
 
-export function currentUser() {
-  return firebase.auth().currentUser
+export async function currentUser(): Promise<firebase.User>{
+  return new Promise((resolve, reject) => {
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user)
+        resolve(user);
+      else
+        request("User not found")
+    })
+  })
 }
 
 export async function getCurrentRole() {
-  let user = currentUser();
+  let user = await currentUser();
   let role = Role.guest;
   if (user != null) {
     let idTokenResult = await user.getIdTokenResult()
@@ -78,23 +70,17 @@ export async function signInUser(email: any) {
 }
 
 export async function signOutUser() {
-  return firebase
+  firebase
     .auth()
-    .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .then(() =>
-      firebase
-        .auth()
-        .signOut()
-        .then((res) => ({
-          res,
-          ok: true,
-        }))
-        .catch((error) => ({
-          error,
-          ok: false,
-        })),
-    )
-    .catch(/* error */);
+    .signOut()
+    .then((res) => ({
+      res,
+      ok: true,
+    }))
+    .catch((error) => ({
+      error,
+      ok: false,
+    }))
 }
 
 export async function checkLoginState() {
