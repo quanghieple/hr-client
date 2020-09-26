@@ -46,12 +46,13 @@ const RegistrationForm = () => {
     setRegisting(true)
     setMessage("")
     delete user.confirm;
-    registerUser(user).then((res) => {
-      console.log(res);
-      message.success(`user ${user.name} was successfully created`);
-      setRegisting(false)
-    }).catch((err) => {
-      setMessage("Something went wrong. Please contact IT support")
+    registerUser(user)
+    .then((res) => {
+      if (res.ok) {
+        message.success(`user ${user.name} was successfully created`);
+      } else {
+        setMessage( (res.body && res.body.message) || "Something went wrong. Please contact IT support")
+      }
       setRegisting(false)
     })
   };

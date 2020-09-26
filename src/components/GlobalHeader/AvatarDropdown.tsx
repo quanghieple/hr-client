@@ -1,7 +1,7 @@
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
 import React from 'react';
-import { history, ConnectProps, connect } from 'umi';
+import { history, ConnectProps, connect, FormattedMessage } from 'umi';
 import { ConnectState } from '@/models/connect';
 import { CurrentUser } from '@/models/user';
 import HeaderDropdown from '../HeaderDropdown';
@@ -62,7 +62,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
 
         <Menu.Item key="logout">
           <LogoutOutlined />
-          退出登录
+          <FormattedMessage id="menu.account.logout"></FormattedMessage>
         </Menu.Item>
       </Menu>
     );

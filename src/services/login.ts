@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import { firebase } from '@/utils/firebase';
+import * as functions from '@/utils/functions';
 
 export interface LoginParamsType {
   userName: string;
@@ -19,8 +20,7 @@ export async function getFakeCaptcha(mobile: string) {
 }
 
 export async function registerUser(newUser: any) {
-  let addAuthenUser = firebase.functions().httpsCallable("addAuthenUser")
-  return addAuthenUser({user: newUser})
+  return functions.post("addAuthenUser", {user : newUser});
 }
 
 export async function currentUser(): Promise<firebase.User>{
@@ -29,7 +29,7 @@ export async function currentUser(): Promise<firebase.User>{
       if (user)
         resolve(user);
       else
-        request("User not found")
+        reject("User not found")
     })
   })
 }
@@ -70,17 +70,22 @@ export async function signInUser(email: any) {
 }
 
 export async function signOutUser() {
-  firebase
+  return firebase
     .auth()
-    .signOut()
-    .then((res) => ({
-      res,
-      ok: true,
-    }))
-    .catch((error) => ({
-      error,
-      ok: false,
-    }))
+    .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(() =>
+      firebase
+        .auth()
+        .signOut()
+        .then((res) => ({
+          res,
+          ok: true,
+        }))
+        .catch((error) => ({
+          error,
+          ok: false,
+        }))
+    )
 }
 
 export async function checkLoginState() {

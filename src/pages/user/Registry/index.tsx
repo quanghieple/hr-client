@@ -1,12 +1,14 @@
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer, PageHeaderWrapper } from '@ant-design/pro-layout';
+import { Card } from 'antd';
 import React from 'react';
 import UserRegister from './components/UserRegister';
-import styles from './index.less';
 
 export default () => {
   return (
-    <PageContainer className={styles.main}>
-      <UserRegister />
-    </PageContainer>
+    <PageHeaderWrapper>
+      <Card>
+        <UserRegister />
+      </Card>
+    </PageHeaderWrapper>
   );
 };

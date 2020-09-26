@@ -7,12 +7,21 @@ export async function query(): Promise<any> {
 
 export async function queryCurrent(): Promise<any> {
   return new Promise(async (resolve, reject) => {
-    let user = await currentUser()
-    console.log("user", user)
-    if (user != null) {
-      resolve(user.providerData[0])
-    } else {
-      resolve({})
+    try {
+      let user = await currentUser()
+      resolve({
+        ok: true,
+        user: {
+          displayName: user.displayName,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          photoURL: user.photoURL,
+          providerId: user.providerId,
+          uid: user.uid
+        }
+      })
+    } catch (err) {
+      resolve({ok: false})
     }
   })
 }

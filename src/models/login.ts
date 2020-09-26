@@ -37,7 +37,6 @@ const Model: LoginModelType = {
       const response = yield signInUser(payload);
       if (response.ok) {
         let role = yield getCurrentRole();
-        console.log("role", role);
         yield put({
           type: 'changeLoginStatus',
           payload: {

@@ -72,11 +72,12 @@ export default defineConfig({
             },
             {
               path: '/users',
-              name: 'Users',
+              name: 'users',
               icon: 'user',
+              authority: ['admin'],
               routes: [
                 {
-                  name: 'New User',
+                  name: 'new',
                   path: '/users/create',
                   component: './user/Registry',
                   authority: ['admin'],
