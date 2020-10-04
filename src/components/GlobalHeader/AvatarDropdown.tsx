@@ -1,4 +1,4 @@
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, ProfileOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
 import React from 'react';
 import { history, ConnectProps, connect, FormattedMessage } from 'umi';
@@ -63,6 +63,10 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
         <Menu.Item key="logout">
           <LogoutOutlined />
           <FormattedMessage id="menu.account.logout"></FormattedMessage>
+        </Menu.Item>
+        <Menu.Item key="profile">
+          <ProfileOutlined />
+          <FormattedMessage id="menu.account.profile"></FormattedMessage>
         </Menu.Item>
       </Menu>
     );

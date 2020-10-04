@@ -34,6 +34,10 @@ export async function currentUser(): Promise<firebase.User>{
   })
 }
 
+export async function getProfile(userId: string){
+  return firebase.database().ref('/profiles/' + userId).once('value')
+}
+
 export async function getCurrentRole() {
   let user = await currentUser();
   let role = Role.guest;

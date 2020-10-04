@@ -85,6 +85,10 @@ export default defineConfig({
               ],
             },
             {
+              path: '/account/profile',
+              component: './Profile',
+            },
+            {
               component: './404',
             },
           ],

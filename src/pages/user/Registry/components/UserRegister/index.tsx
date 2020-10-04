@@ -51,7 +51,7 @@ const RegistrationForm = () => {
       if (res.ok) {
         message.success(`user ${user.name} was successfully created`);
       } else {
-        setMessage( (res.body && res.body.message) || "Something went wrong. Please contact IT support")
+        setMessage(res.body.message)
       }
       setRegisting(false)
     })
