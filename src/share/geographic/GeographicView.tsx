@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Select, Spin } from 'antd';
 import { LabeledValue } from 'antd/es/select';
 import { connect, Dispatch, formatMessage } from 'umi';
-import { GeographicItemType } from '../data.d';
 import styles from './GeographicView.less';
+import { ConnectState } from '@/models/connect';
 
 const { Option } = Select;
 
@@ -13,15 +13,19 @@ const nullSelectItem: LabeledValue = {
   key: '',
 };
 
+export interface GeographicItemType {
+  name: string;
+  id: string;
+}
+
 interface GeographicViewProps {
-  dispatch?: Dispatch<any>;
+  dispatch?: Dispatch;
   province?: any[];
   city?: any[];
   value?: {
     province: LabeledValue;
     city: LabeledValue;
   };
-  loading?: boolean;
   onChange?: (value: { province: LabeledValue; city: LabeledValue }) => void;
 }
 
@@ -30,7 +34,7 @@ class GeographicView extends Component<GeographicViewProps> {
     const { dispatch } = this.props;
     if (dispatch) {
       dispatch({
-        type: 'profile/fetchProvince',
+        type: 'share/fetchProvince',
       });
     }
   };
@@ -41,7 +45,7 @@ class GeographicView extends Component<GeographicViewProps> {
     if (!props.value && !!value && !!value.province) {
       if (dispatch) {
         dispatch({
-          type: 'profile/fetchCity',
+          type: 'share/fetchCity',
           payload: value.province.key,
         });
       }
@@ -83,7 +87,7 @@ class GeographicView extends Component<GeographicViewProps> {
 
     if (dispatch) {
       dispatch({
-        type: 'profile/fetchCity',
+        type: 'share/fetchCity',
         payload: item.key,
       });
     }
@@ -122,10 +126,9 @@ class GeographicView extends Component<GeographicViewProps> {
 
   render() {
     const { province, city } = this.conversionObject();
-    const { loading } = this.props;
 
     return (
-      <Spin spinning={loading} wrapperClassName={styles.row}>
+      <Spin spinning={false} wrapperClassName={styles.row}>
         <Select
           className={styles.item}
           value={province}
@@ -151,22 +154,7 @@ class GeographicView extends Component<GeographicViewProps> {
   }
 }
 
-export default connect(
-  ({
-    profile,
-    loading,
-  }: {
-    profile: {
-      province: GeographicItemType[];
-      city: GeographicItemType[];
-    };
-    loading: any;
-  }) => {
-    const { province, city } = profile;
-    return {
-      province,
-      city,
-      loading: loading.models.profile,
-    };
-  },
-)(GeographicView);
+export default connect(({ share }: ConnectState) => ({
+  province: share.province,
+  city: share.city
+}))(GeographicView);

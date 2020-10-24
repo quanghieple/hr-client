@@ -1,3 +1,5 @@
+import { formatMessage } from "umi";
+import GeographicView from "@/share/geographic/GeographicView";
 import styles from "./index.less";
 import React, { useState } from "react";
 import {
@@ -8,11 +10,15 @@ import {
   Button,
   Alert,
   message,
+  Row, DatePicker
 } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { registerUser } from "@/services/login";
+import Col from "antd/es/grid/col";
+import moment from 'moment';
 
 const { Option } = Select;
+const dateFormat = 'YYYY/MM/DD';
 
 const formItemLayout = {
   labelCol: {
@@ -47,14 +53,14 @@ const RegistrationForm = () => {
     setMessage("")
     delete user.confirm;
     registerUser(user)
-    .then((res) => {
-      if (res.ok) {
-        message.success(`user ${user.name} was successfully created`);
-      } else {
-        setMessage(res.body.message)
-      }
-      setRegisting(false)
-    })
+      .then((res) => {
+        if (res.ok) {
+          message.success(`user ${user.name} was successfully created`);
+        } else {
+          setMessage(res.message)
+        }
+        setRegisting(false)
+      })
   };
 
   const prefixSelector = (
@@ -77,109 +83,158 @@ const RegistrationForm = () => {
       }}
       scrollToFirstError
     >
-      <Form.Item
-        name="email"
-        label="E-mail"
-        rules={[
-          {
-            type: "email",
-            message: "The input is not valid E-mail!",
-          },
-          {
-            required: true,
-            message: "Please input your E-mail!",
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
+      <Row>
+        <Col span={12}>
+          <Form.Item
+            name="email"
+            label="E-mail"
+            rules={[
+              {
+                type: "email",
+                message: "The input is not valid E-mail!",
+              },
+              {
+                required: true,
+                message: "Please input your E-mail!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="phone"
+            label="Phone Number"
+            rules={[{ required: true, message: "Please input your phone number!" }]}
+          >
+            <Input addonBefore={prefixSelector} style={{ width: "100%" }} />
+          </Form.Item>
 
-      <Form.Item
-        name="name"
-        label="Name"
-        rules={[
-          {
-            required: true,
-            message: "Please input your name",
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[
+              {
+                required: true,
+                message: "Please input your password!",
+              },
+            ]}
+            hasFeedback
+          >
+            <Input.Password />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="confirm"
+            label="Confirm Password"
+            dependencies={["password"]}
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: "Please confirm your password!",
+              },
+              ({ getFieldValue }) => ({
+                validator(rule, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    "The two passwords that you entered do not match!"
+                  );
+                },
+              }),
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <Form.Item
+            name="displayName"
+            label="Name"
+            rules={[
+              {
+                required: true,
+                message: "Please input your name",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="birth"
+            label="Birth Date"
+          >
+            <DatePicker style={{ width: '100%' }}
+                        format={dateFormat}
+                        defaultPickerValue={moment(`${new Date().getFullYear() - 20}/01/01`, dateFormat)}/>
+          </Form.Item>
+        </Col>
+      </Row>
 
-      <Form.Item
-        name="password"
-        label="Password"
-        rules={[
-          {
-            required: true,
-            message: "Please input your password!",
-          },
-        ]}
-        hasFeedback
-      >
-        <Input.Password />
-      </Form.Item>
-
-      <Form.Item
-        name="confirm"
-        label="Confirm Password"
-        dependencies={["password"]}
-        hasFeedback
-        rules={[
-          {
-            required: true,
-            message: "Please confirm your password!",
-          },
-          ({ getFieldValue }) => ({
-            validator(rule, value) {
-              if (!value || getFieldValue("password") === value) {
-                return Promise.resolve();
-              }
-              return Promise.reject(
-                "The two passwords that you entered do not match!"
-              );
-            },
-          }),
-        ]}
-      >
-        <Input.Password />
-      </Form.Item>
-
-      <Form.Item
-        name="title"
-        label={
-          <span>
-            Title&nbsp;
+      <Row>
+        <Col span={12}>
+          <Form.Item
+            name="role"
+            label="Role"
+            hasFeedback
+            rules={[{ required: true, message: 'Please select your role' }]}
+          >
+            <Select placeholder="Please select Role">
+              <Option value="admin">Admin</Option>
+              <Option value="user">User</Option>
+            </Select>
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="title"
+            label={
+              <span>
+                Title&nbsp;
             <Tooltip title="What are your title in your company?">
-              <QuestionCircleOutlined />
-            </Tooltip>
-          </span>
-        }
-      >
-        <Input />
-      </Form.Item>
+                  <QuestionCircleOutlined />
+                </Tooltip>
+              </span>
+            }
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+        <Form.Item
+              name="country"
+              label={formatMessage({ id: 'profile.basic.country' })}
+            >
+              <Select style={{ maxWidth: 220 }}>
+                <Option value="Vie">Viet Nam</Option>
+              </Select>
+            </Form.Item>
+        </Col>
+        <Col span={12}>
+        <Form.Item
+              name="geographic"
+              label={formatMessage({ id: 'profile.basic.geographic' })}
+            >
+              <GeographicView />
+            </Form.Item>
+        </Col>
+      </Row>
 
-      <Form.Item
-        name="phone"
-        label="Phone Number"
-        rules={[{ required: true, message: "Please input your phone number!" }]}
-      >
-        <Input addonBefore={prefixSelector} style={{ width: "100%" }} />
-      </Form.Item>
-
-      <Form.Item
-        name="role"
-        label="Role"
-        hasFeedback
-        rules={[{ required: true, message: 'Please select your role' }]}
-      >
-        <Select placeholder="Please select Role">
-          <Option value="admin">Admin</Option>
-          <Option value="user">User</Option>
-        </Select>
-      </Form.Item>
-{/* 
+      {/* 
       <Form.Item
         label="Captcha"
         extra="We must make sure that your are a human."
@@ -219,14 +274,14 @@ const RegistrationForm = () => {
         <Button type="primary" htmlType="submit" loading={registing}>
           Register
         </Button>
-        {!registing && errorMessage != "" && (
+        {!registing && errorMessage !== "" && (
           <Alert
-          style={{
-            marginTop: 5
-          }}
-          message={errorMessage}
-          type="error"
-          showIcon
+            style={{
+              marginTop: 5
+            }}
+            message={errorMessage}
+            type="error"
+            showIcon
           />
         )}
       </Form.Item>

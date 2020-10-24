@@ -1,45 +1,41 @@
-import { getToken, updateProfile } from '@/services/firebase';
+import { CurrentUser } from '@/data/database';
+import { updateProfile } from '@/services/firebase';
 import { currentUser, getProfile } from '@/services/login';
-import { post } from '@/utils/functions';
+import { getAuthority } from '@/utils/authority';
+import * as functions from '@/utils/functions';
 import request from 'umi-request';
 
 export async function queryCurrent(): Promise<any> {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let user = await currentUser();
-      let profile = await getProfile(user.uid);
-      resolve(
-        {
-          ...profile.val(),
-          displayName: user.displayName,
-          email: user.email,
-          phoneNumber: user.phoneNumber,
-          photoURL: user.photoURL,
-          providerId: user.providerId,
-          uid: user.uid
-        }
-      )
-    } catch (err) {
-      console.log(err)
-      resolve({ok: false})
-    }
-  })
+  let user = await currentUser();
+  return getProfile(user.uid);
 }
 
-export function saveUpdateUser(user: any) {
-  // let token = await getToken();
-  // return post("updateAuthenUser", {idToken: token, user: user});
-  return updateProfile(user);
+export async function queryUser(id: string): Promise<any> {
+  return functions.post("getUserById", {id: id})
 }
 
-export async function queryProvince() {
-  return request('https://vapi.vnappmob.com/api/province');
+export function updateCurrentUser(update: any) {
+  return updateProfile(update);
 }
 
-export async function queryCity(province: string) {
-  return request(`https://vapi.vnappmob.com/api/province/district/${province}`);
+export function updateUser(update: any) {
+  return functions.post("updateAuthenUser", {user: update})
 }
 
 export async function query() {
   return request('/api/users');
+}
+
+export async function getUserForUpdate(): Promise<CurrentUser>{
+  const search = window.location.search.substring(1);
+  const params = new URLSearchParams(search); 
+  const id = params.get('id');
+  const isAdmin = getAuthority().includes("admin")
+  if (id && isAdmin) {
+    let query = await queryUser(id);
+    return query.ok ? query.body : {};
+  } else {
+    let query = await queryCurrent(); 
+    return query.val();
+  }
 }

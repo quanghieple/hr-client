@@ -6,6 +6,7 @@ export default {
   'menu.admin.sub-page': 'Sub-Page',
   'menu.users': 'Users',
   'menu.users.new': 'Registry',
+  'menu.users.list': 'User List',
   'menu.login': 'Login',
   'menu.register': 'Register',
   'menu.register.result': 'Register Result',

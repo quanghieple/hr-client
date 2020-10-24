@@ -82,6 +82,12 @@ export default defineConfig({
                   component: './user/Registry',
                   authority: ['admin'],
                 },
+                {
+                  name: 'list',
+                  path: '/users/list',
+                  component: './user/ListUser',
+                  authority: ['admin'],
+                },
               ],
             },
             {

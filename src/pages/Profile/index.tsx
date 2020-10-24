@@ -5,10 +5,10 @@ import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
 import BaseView from './components/base';
 import BindingView from './components/binding';
-import { CurrentUser } from './data.d';
 import NotificationView from './components/notification';
 import SecurityView from './components/security';
 import styles from './style.less';
+import { CurrentUser } from '@/data/database';
 
 const { Item } = Menu;
 
@@ -59,7 +59,7 @@ class Profile extends Component<
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'profile/fetchCurrent',
+      type: 'profile/fetchUserUpdate',
     });
     window.addEventListener('resize', this.resize);
     this.resize();

@@ -1,14 +1,15 @@
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Input, Select, Upload, Form, message, Alert } from 'antd';
-import { connect, FormattedMessage, useIntl, formatMessage } from 'umi';
+import { connect, FormattedMessage, formatMessage } from 'umi';
 import React, { Component, useState } from 'react';
 
-import { CurrentUser } from '../data.d';
-import GeographicView from './GeographicView';
-import PhoneView from './PhoneView';
+import { getAuthority } from '@/utils/authority';
 import styles from './BaseView.less';
-import { saveUpdateUser } from '../service';
+import { updateCurrentUser, updateUser } from '../service';
 import { getDownloadUrl, uploadProfileImage } from '@/services/firebase';
+import GeographicView from '@/share/geographic/GeographicView';
+import { CurrentUser } from '@/data/database';
+import PhoneView from './PhoneView';
 
 const { Option } = Select;
 // const { formatMessage } = useIntl();
@@ -20,11 +21,11 @@ const AvatarView = ({ avatar, email, onChange }: { avatar: string, email: string
   const onPreview = async (file: File) => {
     setUploading(true)
     onChange("loading")
-    let upload = await uploadProfileImage(file, email)
-    if(upload.state == "success") {
-      let url = await getDownloadUrl(upload.metadata.fullPath)
-      onChange(url);
-      setUrl(url)
+    const upload = await uploadProfileImage(file, email)
+    if(upload.state === "success") {
+      const downUrl = await getDownloadUrl(upload.metadata.fullPath)
+      onChange(downUrl);
+      setUrl(downUrl)
       setUploading(false)
     } else {
       message.error(formatMessage({id: "profile.basic.avatar.upload.fail"}))
@@ -51,28 +52,6 @@ const AvatarView = ({ avatar, email, onChange }: { avatar: string, email: string
     </Upload>
   </>)
 };
-interface SelectItem {
-  label: string;
-  key: string;
-}
-
-const validatorGeographic = (
-  _: any,
-  value: {
-    province: SelectItem;
-    city: SelectItem;
-  },
-  callback: (message?: string) => void,
-) => {
-  const { province, city } = value;
-  if (!province.key) {
-    callback(formatMessage({id: "profile.basic.geographic.province.need"}));
-  }
-  if (!city.key) {
-    callback('Please input your city!');
-  }
-  callback();
-};
 
 const validatorPhone = (rule: any, value: string, callback: (message?: string) => void) => {
   if(!value) {
@@ -89,6 +68,7 @@ interface BaseViewState {
   avatar: string;
   updating: boolean;
   errorMessage: string;
+  isAdmin: boolean;
 }
 
 class BaseView extends Component<BaseViewProps, BaseViewState> {
@@ -99,7 +79,8 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
     this.state = {
       avatar: "",
       updating: false,
-      errorMessage: ""
+      errorMessage: "",
+      isAdmin: getAuthority().includes("admin")
     }
   }
 
@@ -119,24 +100,34 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
     this.view = ref;
   };
 
+  handleUpdateRes = (res: any) => {
+    if (res.ok) {
+      message.info(formatMessage({id: 'profile.update.success'}))
+    } else {
+      this.setState({errorMessage: res.message || ""})
+    }
+    this.setState({updating: false});
+  }
+
   handleFinish  = (user: any) => {
+    const { currentUser } = this.props;
     this.setState({updating: true});
     this.setState({errorMessage: ""})
-    if(this.state.avatar == "loading") {
+    if(this.state.avatar === "loading") {
       message.info(formatMessage({id: 'profile.basic.avatar.wait'}));
       this.setState({updating: false});
     } else {
       if (this.state.avatar) {
-        user.photoURL = this.state.avatar
+        user.photoURL = this.state.avatar;
+      } else {
+        user.photoURL = currentUser?.photoURL;
       }
-      saveUpdateUser(user).then((res) => {
-        if (res.ok) {
-          message.info(formatMessage({id: 'profile.update.success'}))
-        } else {
-          this.setState({errorMessage: res.message || ""})
-        }
-        this.setState({updating: false});
-      })
+      user.uid = currentUser?.uid;
+      if (this.state.isAdmin) {
+        updateUser(user).then(this.handleUpdateRes)
+      } else {
+        updateCurrentUser(user).then(this.handleUpdateRes)
+      }
     }
   };
 
@@ -146,7 +137,7 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
 
   render() {
     const { currentUser } = this.props;
-
+    const { isAdmin } = this.state;
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
@@ -166,7 +157,7 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
                 },
               ]}
             >
-              <Input disabled={true}/>
+              <Input disabled={!isAdmin}/>
             </Form.Item>
             <Form.Item
               name="displayName"
@@ -247,7 +238,7 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
                 { validator: validatorPhone },
               ]}
             >
-              <PhoneView />
+              <PhoneView isAdmin={isAdmin} />
             </Form.Item>
             <Form.Item>
               <Button htmlType="submit" type="primary" loading={this.state.updating}>
