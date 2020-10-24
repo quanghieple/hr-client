@@ -1,4 +1,5 @@
 import { formatMessage } from "umi";
+import moment from 'moment';
 import GeographicView from "@/share/geographic/GeographicView";
 import styles from "./index.less";
 import React, { useState } from "react";
@@ -15,7 +16,6 @@ import {
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { registerUser } from "@/services/login";
 import Col from "antd/es/grid/col";
-import moment from 'moment';
 
 const { Option } = Select;
 const dateFormat = 'YYYY/MM/DD';
