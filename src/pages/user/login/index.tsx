@@ -1,4 +1,3 @@
-import { AlipayCircleOutlined, TaobaoCircleOutlined, WeiboCircleOutlined } from '@ant-design/icons';
 import { Alert, Checkbox } from 'antd';
 import React, { useState } from 'react';
 import { connect, Dispatch, FormattedMessage, useIntl } from 'umi';
@@ -121,15 +120,15 @@ const Login: React.FC<LoginProps> = (props) => {
         <Submit loading={submitting}>
           <FormattedMessage id="login.button.login" />
         </Submit>
-        <div className={styles.other}>
+        {/* <div className={styles.other}>
           <FormattedMessage id="login.label.login.with" />
           <AlipayCircleOutlined className={styles.icon} />
           <TaobaoCircleOutlined className={styles.icon} />
           <WeiboCircleOutlined className={styles.icon} />
-          {/* <Link className={styles.register} to="/user/register">
+          <Link className={styles.register} to="/user/register">
             <FormattedMessage id="login.label.register" />
-          </Link> */}
-        </div>
+          </Link>
+        </div> */}
       </LoginForm>
     </div>
   );
