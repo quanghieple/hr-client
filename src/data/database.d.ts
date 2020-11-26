@@ -3,7 +3,7 @@ import { GeographicType } from "@/data/share";
 export interface CurrentUser {
     displayName?: string;
     photoURL?: string;
-    uid?: string;
+    uid: string;
     email?: string;
     title?: string;
     country?: string;
@@ -11,7 +11,21 @@ export interface CurrentUser {
     address?: string;
     phoneNumber?: string;
     disabled?: string;
+    role?: string;
+    parent?: string;
     // notifyCount?: number;
     // unreadCount?: number;
     // group?: string;
+  }
+
+  export interface TimeCheck {
+    in?: number;
+    out?: number;
+    type?: string;
+  }
+
+  export interface LocationCheckIn {
+    radius: number;
+    name: string;
+    coord: Coord;
   }

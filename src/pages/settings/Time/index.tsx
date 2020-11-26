@@ -3,49 +3,49 @@ import React, { Component } from 'react';
 import { FormattedMessage, Dispatch, connect } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
-import BaseView from './components/base';
 import BindingView from './components/binding';
 import NotificationView from './components/notification';
 import SecurityView from './components/security';
 import styles from './style.less';
+import LocationSetting from './components/location';
+import { ConnectState } from '@/models/connect';
 import { CurrentUser } from '@/data/database';
 
 const { Item } = Menu;
 
-interface ProfileProps {
+interface TimeProps {
   dispatch: Dispatch;
   currentUser: CurrentUser;
 }
 
-type ProfileStateKeys = 'base' | 'security' | 'binding' | 'notification';
-interface ProfileState {
+type TimeStateKeys = 'location' | 'security' | 'binding' | 'notification';
+interface TimeState {
   mode: 'inline' | 'horizontal';
   menuMap: {
     [key: string]: React.ReactNode;
   };
-  selectKey: ProfileStateKeys;
-  updateOther: boolean;
+  selectKey: TimeStateKeys;
 }
 
-class Profile extends Component<
-  ProfileProps,
-  ProfileState
+class Time extends Component<
+  TimeProps,
+  TimeState
 > {
   main: HTMLDivElement | undefined = undefined;
 
-  constructor(props: ProfileProps) {
+  constructor(props: TimeProps) {
     super(props);
     const menuMap = {
-      base: <FormattedMessage id="profile.menuMap.basic" defaultMessage="Basic Settings" />,
+      location: <FormattedMessage id="settings.menuMap.location" defaultMessage="Location Settings" />,
       security: (
-        <FormattedMessage id="profile.menuMap.security" defaultMessage="Security Settings" />
+        <FormattedMessage id="settingsandtime.menuMap.security" defaultMessage="Security Settings" />
       ),
       binding: (
-        <FormattedMessage id="profile.menuMap.binding" defaultMessage="Account Binding" />
+        <FormattedMessage id="settingsandtime.menuMap.binding" defaultMessage="Account Binding" />
       ),
       notification: (
         <FormattedMessage
-          id="profile.menuMap.notification"
+          id="settingsandtime.menuMap.notification"
           defaultMessage="New Message Notification"
         />
       ),
@@ -53,25 +53,16 @@ class Profile extends Component<
     this.state = {
       mode: 'inline',
       menuMap,
-      selectKey: 'base',
-      updateOther: false,
+      selectKey: 'location',
     };
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'profile/fetchUserUpdate',
-    });
     window.addEventListener('resize', this.resize);
     this.resize();
   }
 
   componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'profile/removeUserUpdate'
-    })
     window.removeEventListener('resize', this.resize);
   }
 
@@ -85,7 +76,7 @@ class Profile extends Component<
     return menuMap[selectKey];
   };
 
-  selectKey = (key: ProfileStateKeys) => {
+  selectKey = (key: TimeStateKeys) => {
     this.setState({
       selectKey: key,
     });
@@ -116,8 +107,8 @@ class Profile extends Component<
   renderChildren = () => {
     const { selectKey } = this.state;
     switch (selectKey) {
-      case 'base':
-        return <BaseView />;
+      case 'location':
+        return <LocationSetting />
       case 'security':
         return <SecurityView />;
       case 'binding':
@@ -151,7 +142,7 @@ class Profile extends Component<
             <Menu
               mode={mode}
               selectedKeys={[selectKey]}
-              onClick={({ key }) => this.selectKey(key as ProfileStateKeys)}
+              onClick={({ key }) => this.selectKey(key as TimeStateKeys)}
             >
               {this.getMenu()}
             </Menu>
@@ -166,8 +157,6 @@ class Profile extends Component<
   }
 }
 
-export default connect(
-  ({ profile }: { profile: { currentUser: CurrentUser } }) => ({
-    currentUser: profile.currentUser,
-  }),
-)(Profile);
+export default connect(({ user }: ConnectState) => ({
+  currentUser: user.currentUser
+}))(Time);

@@ -12,6 +12,7 @@ export interface ModelType {
   state: ModalState;
   effects: {
     fetchUserUpdate: Effect;
+    removeUserUpdate: Effect;
   };
   reducers: {
     saveCurrentUser: Reducer<ModalState>;
@@ -33,6 +34,11 @@ const Model: ModelType = {
       yield put({
         type: 'saveCurrentUser',
         payload: response,
+      });
+    },
+    *removeUserUpdate(_, { call, put }) {
+      yield put({
+        type: 'saveCurrentUser'
       });
     }
   },

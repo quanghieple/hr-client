@@ -74,7 +74,6 @@ const TableList: React.FC<{}> = () => {
       hideInTable: true,
       hideInSearch: true,
       render: (_ , record) => {
-        console.log(_, record)
         if (record.photoURL) {
           return <img width="150px" src={record.photoURL} />
         } else {
@@ -95,7 +94,7 @@ const TableList: React.FC<{}> = () => {
             Disabled
           </a>
           <Divider type="vertical" />
-          <Link to={`/account/profile?id=${record.uid}`}>Edit</Link>
+          <Link to={`/other/profile?id=${record.uid}`}>Edit</Link>
         </>
       ),
     },

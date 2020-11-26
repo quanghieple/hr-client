@@ -1,3 +1,4 @@
+import { currentUser } from "@/services/login";
 import { formatMessage } from "umi";
 
 const localURL = "http://localhost:5001/hr-sol-289314/us-central1/"
@@ -7,7 +8,6 @@ async function parseBody(response: Response) {
     const ok = response.ok;
     const status = response.status;
     const body = await response.json()
-    console.log(body)
     if (ok) {
         return {body: body, ok: ok, status: status} 
     } else
@@ -20,6 +20,7 @@ export async function get(methodName: string): Promise<any> {
 }
 
 export async function post(methodName: string, requestBody: any): Promise<any> {
-    const response = await fetch(localURL + methodName, {method: 'POST', body: JSON.stringify(requestBody)})
+    const current = await currentUser();
+    const response = await fetch(localURL + methodName, {method: 'POST', body: JSON.stringify({...requestBody, executor: current.uid})})
     return parseBody(response)
 }

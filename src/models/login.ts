@@ -1,7 +1,7 @@
 import { stringify } from 'querystring';
 import { history, Reducer, Effect } from 'umi';
 
-import { currentUser, getCurrentRole, signInUser, signOutUser } from '@/services/login';
+import { getCurrentRole, signInUser, signOutUser } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
@@ -60,7 +60,7 @@ const Model: LoginModelType = {
             return;
           }
         }
-        history.replace(redirect || '/');
+        window.location.href = redirect || '/';
       } else {
         yield put({
           type: 'changeLoginStatus',

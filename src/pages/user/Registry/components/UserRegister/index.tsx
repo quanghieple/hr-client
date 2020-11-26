@@ -193,6 +193,7 @@ const RegistrationForm = () => {
           >
             <Select placeholder="Please select Role">
               <Option value="admin">Admin</Option>
+              <Option value="manager">Manager</Option>
               <Option value="user">User</Option>
             </Select>
           </Form.Item>
@@ -213,26 +214,26 @@ const RegistrationForm = () => {
           </Form.Item>
         </Col>
       </Row>
-      <Row>
-        <Col span={12}>
-        <Form.Item
-              name="country"
-              label={formatMessage({ id: 'profile.basic.country' })}
-            >
-              <Select style={{ maxWidth: 220 }}>
-                <Option value="Vie">Viet Nam</Option>
-              </Select>
-            </Form.Item>
-        </Col>
-        <Col span={12}>
-        <Form.Item
-              name="geographic"
-              label={formatMessage({ id: 'profile.basic.geographic' })}
-            >
-              <GeographicView />
-            </Form.Item>
-        </Col>
-      </Row>
+    <Row>
+      <Col span={12}>
+      <Form.Item
+            name="country"
+            label={formatMessage({ id: 'profile.basic.country' })}
+          >
+            <Select style={{ maxWidth: 220 }}>
+              <Option value="Vie">Viet Nam</Option>
+            </Select>
+          </Form.Item>
+      </Col>
+      <Col span={12}>
+      <Form.Item
+            name="geographic"
+            label={formatMessage({ id: 'profile.basic.geographic' })}
+          >
+            <GeographicView />
+          </Form.Item>
+      </Col>
+    </Row>
 
       {/* 
       <Form.Item

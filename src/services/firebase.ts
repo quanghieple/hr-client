@@ -4,8 +4,12 @@ import { formatMessage } from "umi";
 
 var storageRef = firebase.storage().ref();
 
-export function getToken(): Promise<string> {
-    return firebase.auth().currentUser.getIdToken(false)
+export async function getToken(): Promise<string> {
+    let currentUser = firebase.auth().currentUser;
+    if (currentUser) {
+        return await currentUser.getIdToken(false)
+    } else 
+        return "none"
 }
 
 export function uploadProfileImage(file: File, filename: string) {
@@ -26,10 +30,8 @@ export async function updateProfile(update: CurrentUser) {
         if (user != {}) {
             await currentUser?.updateProfile(user)
         }
-        if(update != {}) {
-            await firebase.database().ref().child("profiles/" + currentUser?.uid).set(update)
-        }
-
+        await firebase.database().ref().child("profiles/" + currentUser?.uid).set(update)
+        
         return {ok: true}
     } catch (err) {
         console.log(err)

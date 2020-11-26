@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { currentUser } from './login';
+import { currentUser, getProfile } from './login';
 
 export async function query(): Promise<any> {
   return request('/api/users');
@@ -9,6 +9,7 @@ export async function queryCurrent(): Promise<any> {
   return new Promise(async (resolve, reject) => {
     try {
       let user = await currentUser()
+      let profile = (await getProfile(user.uid)).val();
       resolve({
         ok: true,
         user: {
@@ -17,7 +18,8 @@ export async function queryCurrent(): Promise<any> {
           phoneNumber: user.phoneNumber,
           photoURL: user.photoURL,
           providerId: user.providerId,
-          uid: user.uid
+          uid: user.uid,
+          parent: profile.parent
         }
       })
     } catch (err) {

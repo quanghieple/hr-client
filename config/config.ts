@@ -32,6 +32,12 @@ export default defineConfig({
           path: '/user/login',
           component: './user/login',
         },
+        {
+          name: '空白页面',
+          icon: 'smile',
+          path: '/user/qr-check',
+          component: './time/QrCode',
+        },
       ],
     },
     {
@@ -90,8 +96,32 @@ export default defineConfig({
               ],
             },
             {
+              path: '/settings',
+              name: 'settings',
+              icon: 'setting',
+              authority: ['admin'],
+              routes: [
+                {
+                  name: 'time',
+                  path: '/settings/time',
+                  component: './settings/Time',
+                },
+              ],
+            },
+            {
+              name: 'timekeeping',
+              icon: 'clock-circle',
+              path: '/time/timekeeping',
+              component: './time/TimeKeep',
+            },
+            {
               path: '/account/profile',
               component: './Profile',
+            },
+            {
+              path: '/other/profile',
+              component: './Profile',
+              authority: ['admin'],
             },
             {
               component: './404',
