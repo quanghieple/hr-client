@@ -4,6 +4,8 @@ import { Redirect, connect, ConnectProps } from 'umi';
 import { stringify } from 'querystring';
 import { ConnectState } from '@/models/connect';
 import { CurrentUser } from '@/models/user';
+import { firebase } from '@/utils/firebase';
+import { getCheckinPath } from '@/services/checkin';
 
 interface SecurityLayoutProps extends ConnectProps {
   loading?: boolean;
@@ -29,6 +31,21 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
         type: 'user/fetchCurrent',
       });
     }
+  }
+
+  shouldComponentUpdate(nextProps: SecurityLayoutProps, nextState: SecurityLayoutState) {
+    const { dispatch } = nextProps;
+    const uid = nextProps.currentUser && nextProps.currentUser.uid
+    const preUid = this.props.currentUser && this.props.currentUser.uid
+    if (preUid != uid && uid && uid != "-1" && dispatch) {
+      firebase.database().ref().child(getCheckinPath(uid, new Date())).on('value', (snap) => {
+        dispatch({
+          type: 'checkin/saveHistory',
+          payload: snap.val()
+        })
+      })
+    }
+    return true;
   }
 
   render() {

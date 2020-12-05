@@ -7,6 +7,7 @@ import pwa from './en-US/pwa';
 import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
 import profile from './en-US/profile';
+import checkin from './en-US/checkin';
 
 export default {
   'navBar.lang': 'Languages',
@@ -25,5 +26,6 @@ export default {
   ...component,
   ...login,
   ...firebase,
-  ...profile
+  ...profile,
+  ...checkin
 };

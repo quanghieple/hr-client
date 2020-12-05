@@ -3,6 +3,7 @@ import { GlobalModelState } from './global';
 import { UserModelState } from './user';
 import { StateType } from './login';
 import { ShareState } from './share'
+import { CheckinModelState } from './checkin';
 
 export { GlobalModelState, UserModelState };
 
@@ -16,6 +17,7 @@ export interface Loading {
     user?: boolean;
     login?: boolean;
     share?: boolean;
+    checkin?: boolean;
   };
 }
 
@@ -25,7 +27,8 @@ export interface ConnectState {
   settings: ProSettings;
   user: UserModelState;
   login: StateType;
-  share: ShareState
+  share: ShareState;
+  checkin: CheckinModelState;
 }
 
 export interface Route extends MenuDataItem {

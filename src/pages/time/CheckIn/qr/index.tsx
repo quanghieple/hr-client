@@ -1,22 +1,30 @@
+import { CurrentUser } from "@/data/database";
+import { ConnectState } from "@/models/connect";
+import { QRcheck } from "@/services/checkin";
 import React from "react";
 import QrReader from 'react-qr-reader'
+import { connect, formatMessage } from "umi";
 import FormCheck from "../form";
 
 interface LocationState {
     qrResult: string | null;
-    checkTime: Date
+    checkTime: Date;
+    errorMessage: string;
+    alertType: 'success' | 'info' | 'warning' | 'error';
 }
 
 interface LocationProps {
-
+    currentUser: CurrentUser;
 }
 
-export default class QRScane extends React.Component<LocationProps, LocationState> {
+class QRScane extends React.Component<LocationProps, LocationState> {
     constructor(props: LocationProps) {
         super(props);
         this.state = {
             qrResult: "",
-            checkTime: new Date()
+            checkTime: new Date(),
+            errorMessage: formatMessage({id: 'checkin.qr.scan-first'}),
+            alertType: "info"
         }
     }
 
@@ -24,13 +32,22 @@ export default class QRScane extends React.Component<LocationProps, LocationStat
         if (data) {
             this.setState({
                 qrResult: data,
-                checkTime: new Date()
+                checkTime: new Date(), 
+                errorMessage: ""
             })
+        } else {
+            this.setState({ errorMessage: formatMessage({id: 'checkin.qr.scan-fail'}), alertType: "warning"})
         }
     }
     handleError = (err: any) => {
         console.error(err)
+        this.setState({ errorMessage: formatMessage({id: 'checkin.qr.init-fail'}), alertType: "error"})
     }
+
+    handleSubmit = (shift: any, note: any) => {
+        return QRcheck({checkTime: this.state.checkTime, shift: shift, note: note, ciphertext: this.state.qrResult})
+    }
+
     render() {
         return (
             <div>
@@ -45,8 +62,12 @@ export default class QRScane extends React.Component<LocationProps, LocationStat
                 {this.state.qrResult != "" && (
                     <p>{this.state.checkTime.toString()}</p>
                 )}
-                <FormCheck />
+                <FormCheck errorMessage={this.state.errorMessage} alertType={this.state.alertType} handleSubmit={this.handleSubmit}/>
             </div>
         )
     }
 }
+
+export default connect(({ user }: ConnectState) => ({
+    currentUser: user.currentUser
+  }))(QRScane)

@@ -63,7 +63,7 @@ class LocationSetting extends Component<LocationProps, LocationState> {
     }
 
     submitHandler = () => {
-        let newLocation = [{name: "", radius: this.state.radius, coord: this.state.currentCoord}, ...this.state.locations]
+        let newLocation = [{name: this.state.name, radius: this.state.radius, coord: this.state.currentCoord}, ...this.state.locations]
         this.setState({openSetRadius: false, locations: []})
         addLocation(this.props.currentUser.uid, newLocation).then((res) => {
             setTimeout(() => {
@@ -154,7 +154,7 @@ class LocationSetting extends Component<LocationProps, LocationState> {
                     <Slider marks={marks} step={100} value={this.state.radius} min={0} max={2000}
                     onChange={(value: number) => this.setState({ radius: value })} />
 
-                    <Input placeholder="name" value={this.state.name} onChange={(value: any) => this.setState({ name: value })} />
+                    <Input placeholder="name" value={this.state.name} onChange={(value: any) => this.setState({ name: value.target.value })} />
                 </Modal>
             </>
         )

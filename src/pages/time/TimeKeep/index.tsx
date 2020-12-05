@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Tabs } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import CheckIn from '../CheckIn';
+import WorkSheet from '../WorkSheet';
 interface TimeKeepProps {
   match: {
     url: string;
@@ -27,7 +28,7 @@ class TimeKeep extends Component<TimeKeepProps> {
             <CheckIn />
           </TabPane>
           <TabPane tab="Work Sheet" key="2">
-            Content of Tab Pane 2
+            <WorkSheet />
           </TabPane>
         </Tabs>
       </PageContainer>
