@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Component } from 'react';
-import { Alert, Badge, Button, Form, Input, message, Select } from 'antd';
+import { Alert, Badge, Button, Form, Input, message, notification, Select } from 'antd';
 import { getCurrentShift } from '@/services/checkin';
 import { connect, formatMessage } from 'umi';
 import { ConnectState } from '@/models/connect';
@@ -11,6 +11,7 @@ interface FormCheckProps {
     errorMessage: string;
     alertType: 'success' | 'info' | 'warning' | 'error';
     handleSubmit: Function;
+    resetForm: Function;
     currentUser: CurrentUser;
     currentCheck: any;
 }
@@ -63,7 +64,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
             checkin: 0,
             submitting: false,
             shifts: {"morning": "Morning", "evening": "Evening", "night": "Night"},
-            checkedShift: []
+            checkedShift: [],
         }
     }
     
@@ -90,9 +91,22 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
         this.setState({checkedShift: array})
     }
 
+    resetForm = () => {
+        this.props.resetForm()
+    }
+
+    openNotification = (title: string, mess: string) => {
+        notification['error']({
+          message: title,
+          description: mess,
+          duration: 15
+        });
+    }
+
     handleSubmit = (check: any) => {
         this.setState({ submitting: true });
         this.props.handleSubmit(check.shift, check.note).then((res: any) => {
+            var errorMess = ""
             this.setState({submitting: false})
             if (res.ok) {
                 let result = res.body
@@ -104,15 +118,21 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                             {in: result.in, out: result.out, shift: check.shift}]})
                     }
                     message.info(`${formatMessage({id: 'checkin.success'})}. shift ${check.shift}`)
+                    this.resetForm()
                 } else {
-                    message.error(`${formatMessage({id: 'checkin.fail'})}. code ${result.code}`)
+                    errorMess = formatMessage({id: `checkin.code.${result.code}`, defaultMessage: ""})
                 }
             } else {
-                message.error(res.message)
+                errorMess = res.message
+            }
+
+            if (errorMess) {
+                this.openNotification(formatMessage({id: 'checkin.fail'}), errorMess)
+                this.resetForm()
             }
             
         }).catch((err: any) => {
-            message.error(formatMessage({id: 'error.it.help'}))
+            this.openNotification(formatMessage({id: 'checkin.fail'}), formatMessage({id: 'error.it.help'}))
         })
     }
 
@@ -122,10 +142,10 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
         return (
             <div style={{ paddingTop: "20px" }} >
                 {checkedShift.length > 0 && (
-                    <Alert message={formatMessage({id: 'checkin.today-history'})} description={<History data={checkedShift} shifts={shifts} />} type={"success"} showIcon/>
+                    <Alert style={{marginBottom: '15px'}} message={formatMessage({id: 'checkin.today-history'})} description={<History data={checkedShift} shifts={shifts} />} type={"success"} showIcon/>
                 )}
                 {checkin != 0 && (
-                    <div style={{marginTop: '15px', marginBottom: '15px'}}>
+                    <div style={{marginBottom: '15px'}}>
                         <TimeWork checkin={checkin} shift={shifts[shift]} />
                     </div>
                 )}
@@ -135,6 +155,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                     name="basic"
                     onFinish={this.handleSubmit}
                     ref={this.formRef}
+                    initialValues={{shift: shift}}
                 >
                     <Form.Item
                         label={formatMessage({id: 'checkin.form.shift'})}
@@ -146,7 +167,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                             },
                           ]}
                     >
-                        <Select disabled={checkin != 0}>
+                        <Select disabled={checkin != 0} defaultActiveFirstOption={true}>
                             {Object.keys(shifts).map(key => {
                                 return <Option value={key} disabled={checkedShift.some(c => c.shift == key)}>{shifts[key]}</Option>
                             })}
@@ -162,7 +183,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                     <Form.Item>
                         <Button loading={this.state.submitting} type="primary" htmlType="submit">
                             Submit
-                    </Button>
+                        </Button>
                     </Form.Item>
                 </Form>
                 ) : <Alert message={alertType} description={errorMessage} type={alertType} showIcon/>}

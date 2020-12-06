@@ -1,6 +1,8 @@
 import { CurrentUser } from "@/data/database";
 import { ConnectState } from "@/models/connect";
 import { QRcheck } from "@/services/checkin";
+import { formatTime } from "@/utils/date";
+import { Alert } from "antd";
 import React from "react";
 import QrReader from 'react-qr-reader'
 import { connect, formatMessage } from "umi";
@@ -8,7 +10,7 @@ import FormCheck from "../form";
 
 interface LocationState {
     qrResult: string | null;
-    checkTime: Date;
+    checkTime: number;
     errorMessage: string;
     alertType: 'success' | 'info' | 'warning' | 'error';
 }
@@ -22,7 +24,7 @@ class QRScane extends React.Component<LocationProps, LocationState> {
         super(props);
         this.state = {
             qrResult: "",
-            checkTime: new Date(),
+            checkTime: 0,
             errorMessage: formatMessage({id: 'checkin.qr.scan-first'}),
             alertType: "info"
         }
@@ -32,7 +34,7 @@ class QRScane extends React.Component<LocationProps, LocationState> {
         if (data) {
             this.setState({
                 qrResult: data,
-                checkTime: new Date(), 
+                checkTime: new Date().getTime(), 
                 errorMessage: ""
             })
         } else {
@@ -48,6 +50,13 @@ class QRScane extends React.Component<LocationProps, LocationState> {
         return QRcheck({checkTime: this.state.checkTime, shift: shift, note: note, ciphertext: this.state.qrResult})
     }
 
+    resetForm = () => {
+        this.setState({
+            qrResult: "",
+            checkTime: 0
+        })
+    }
+
     render() {
         return (
             <div>
@@ -60,9 +69,9 @@ class QRScane extends React.Component<LocationProps, LocationState> {
                 />
                 )}
                 {this.state.qrResult != "" && (
-                    <p>{this.state.checkTime.toString()}</p>
+                    <Alert message="" description={`Check time: ${formatTime(this.state.checkTime)}`} type="info" />
                 )}
-                <FormCheck errorMessage={this.state.errorMessage} alertType={this.state.alertType} handleSubmit={this.handleSubmit}/>
+                <FormCheck errorMessage={this.state.errorMessage} alertType={this.state.alertType} handleSubmit={this.handleSubmit} resetForm={this.resetForm}/>
             </div>
         )
     }

@@ -17,3 +17,8 @@ export function currentDiff(time: number, withS: boolean = false) {
     let difference = Math.abs(time - (new Date()).getTime())
     return parseDiff(difference, withS)
 }
+
+export function formatTime(time: number) {
+    let date = new Date(time)
+    return `${date.getHours()}h:${date.getMinutes()}m:${date.getSeconds()}s`
+}

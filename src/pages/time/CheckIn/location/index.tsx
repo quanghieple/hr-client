@@ -74,6 +74,9 @@ class LocationCheck extends React.Component<LocationProps, LocationState> {
         return localtionCheck({...this.state.center, shift: shift, note: note, checkTime: new Date().getTime()})
     }
 
+    resetForm = () => {
+    }
+
     render(){
         return (
             <div style={{ height: '300px', width: '100%' }}>
@@ -91,7 +94,7 @@ class LocationCheck extends React.Component<LocationProps, LocationState> {
                         />
                     </GoogleMapReact>
                 )}
-                <FormCheck errorMessage={this.state.errorMessage} alertType={this.state.alertType} handleSubmit={this.handleSubmit}/>
+                <FormCheck errorMessage={this.state.errorMessage} alertType={this.state.alertType} handleSubmit={this.handleSubmit} resetForm={this.resetForm}/>
             </div>
         )
     }

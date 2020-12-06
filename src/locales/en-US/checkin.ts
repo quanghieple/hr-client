@@ -14,4 +14,5 @@ export default {
     'checkin.qr.scan-first': 'Please scan QR code first',
     'checkin.qr.scan-fail': 'Failed to scan QR code',
     'checkin.qr.init-fail': 'Failed to init QR reader, Please contact technical support',
+    'checkin.code.3002': 'Your QR code was expried'
 }
