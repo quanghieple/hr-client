@@ -1,9 +1,11 @@
 import React, { useState, useEffect, Component } from 'react';
-import { Alert, Button, Form, Input, message, Select } from 'antd';
+import { Alert, Badge, Button, Form, Input, message, Select } from 'antd';
 import { getCurrentShift } from '@/services/checkin';
 import { connect, formatMessage } from 'umi';
 import { ConnectState } from '@/models/connect';
 import { CurrentUser } from '@/data/database';
+import { timeDiff } from '@/utils/date';
+import { FormInstance } from 'antd/lib/form';
 
 interface FormCheckProps {
     errorMessage: string;
@@ -11,11 +13,9 @@ interface FormCheckProps {
     handleSubmit: Function;
     currentUser: CurrentUser;
     currentCheck: any;
-    loading: boolean;
 }
 
 interface FormCheckState {
-    note: string;
     shift: string;
     shifts: object;
     checkedShift: Array<any>;
@@ -35,26 +35,30 @@ const TimeWork = (props: {checkin: number, shift: string}) => {
         return () => clearTimeout(timeout)
     })
     const calculateTimeLeft = () => {
-        let difference = (new Date()).getTime() - props.checkin;
-    
-        let left = {
-            hours: Math.floor(difference / (1000 * 60 * 60)),
-            minutes: Math.floor((difference / 1000 / 60) % 60),
-            seconds: Math.floor((difference / 1000) % 60)
-        };
-
-        setCount(`${left.hours}h:${left.minutes}m:${left.seconds}s`)
+        setCount(timeDiff(props.checkin, (new Date()).getTime(), true))
     }
     return (
-        <Alert message="info" description={`${formatMessage({id: 'checkin.working-on'})} ${props.shift}(${count})`} />
+        <Alert style={{margin: '15'}} message="" description={`${formatMessage({id: 'checkin.working-on'})} ${props.shift} (${count})`} />
+    )
+}
+
+const History = (props: {data: Array<any>, shifts: any}) => {
+    return (
+        <ul className="events" style={{paddingLeft: '10px'}}>
+            {props.data.map((value: any) => {
+                return <li key={value.shift}>
+                    <Badge status='success' text={`${props.shifts[value.shift]} - ${timeDiff(value.in, value.out)}`} />
+                </li>
+            })}
+        </ul>
     )
 }
 
 class FormCheck extends Component<FormCheckProps, FormCheckState> {
+    formRef = React.createRef<FormInstance>();
     constructor(props: FormCheckProps) {
         super(props);
         this.state = {
-            note: "",
             shift: "",
             checkin: 0,
             submitting: false,
@@ -67,21 +71,23 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
         getCurrentShift(this.props.currentUser.uid).then((snap) => {
             let value = snap.val();
             if(value) {
-                this.setState({checkin: value.checkTime})
+                this.setState({checkin: value.checkTime, shift: value.shift})
+                if(this.formRef.current)
+                    this.formRef.current.setFieldsValue({
+                        shift: value.shift
+                    });
             }
         })
 
         let key: string = new Date().getDate().toString()
         let history = this.props.currentCheck[key] || {}
 
-        Object.keys(history).forEach((key) => {
+        let array = Object.keys(history).filter(key => history[key].out).map((key) => {
             let checkin = history[key]
-            if(checkin.in) {
-                if (checkin.out) {
-                    this.setState({ checkedShift: [...this.state.checkedShift, {...checkin, shift: key}]})
-                }
-            }
+            return {...checkin, shift: key}
         })
+
+        this.setState({checkedShift: array})
     }
 
     handleSubmit = (check: any) => {
@@ -92,7 +98,10 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                 let result = res.body
                 if (result.ok) {
                     if(result.type == "in") {
-                        this.setState({checkin: result.time})
+                        this.setState({checkin: result.in, shift: check.shift})
+                    } else {
+                        this.setState({checkin: 0, checkedShift: [...this.state.checkedShift, 
+                            {in: result.in, out: result.out, shift: check.shift}]})
                     }
                     message.info(`${formatMessage({id: 'checkin.success'})}. shift ${check.shift}`)
                 } else {
@@ -107,37 +116,26 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
         })
     }
 
-    calculateTimeDiff(from: number, to: number) {
-        let difference = to - from
-    
-        let left = {
-            hours: Math.floor(difference / (1000 * 60 * 60)),
-            minutes: Math.floor((difference / 1000 / 60) % 60),
-            seconds: Math.floor((difference / 1000) % 60)
-        };
-
-        return `${left.hours}h:${left.minutes}m`
-    }
-
     render() {
         const { alertType, errorMessage } = this.props
-        const {checkin, shift, shifts, note, checkedShift} = this.state;
+        const {checkin, shift, shifts, checkedShift} = this.state;
         return (
             <div style={{ paddingTop: "20px" }} >
+                {checkedShift.length > 0 && (
+                    <Alert message={formatMessage({id: 'checkin.today-history'})} description={<History data={checkedShift} shifts={shifts} />} type={"success"} showIcon/>
+                )}
+                {checkin != 0 && (
+                    <div style={{marginTop: '15px', marginBottom: '15px'}}>
+                        <TimeWork checkin={checkin} shift={shifts[shift]} />
+                    </div>
+                )}
                 {errorMessage === "" ? (
                     <Form
                     layout="vertical"
                     name="basic"
                     onFinish={this.handleSubmit}
+                    ref={this.formRef}
                 >
-                    {checkedShift.length > 0 && (
-                        checkedShift.map((value: any) => {
-                            return <Alert message={formatMessage({id: 'checkin.today-history'})} description={`${shifts[value.shift]} - ${this.calculateTimeDiff(value.in, value.out)}`} type={"info"} showIcon/>
-                        })
-                    )}
-                    {checkin != 0 && (
-                        <TimeWork checkin={checkin} shift={shift} />
-                    )}
                     <Form.Item
                         label={formatMessage({id: 'checkin.form.shift'})}
                         name="shift"
@@ -148,7 +146,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                             },
                           ]}
                     >
-                        <Select disabled={checkin != 0} defaultActiveFirstOption value={shift} onChange={(value) => this.setState({shift: value})}>
+                        <Select disabled={checkin != 0}>
                             {Object.keys(shifts).map(key => {
                                 return <Option value={key} disabled={checkedShift.some(c => c.shift == key)}>{shifts[key]}</Option>
                             })}
@@ -159,7 +157,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                         label={formatMessage({id: 'checkin.form.note'})}
                         name="note"
                     >
-                        <Input.TextArea value={note} onChange={(event) => this.setState({note: event.target.value})}  />
+                        <Input.TextArea />
                     </Form.Item>
                     <Form.Item>
                         <Button loading={this.state.submitting} type="primary" htmlType="submit">
@@ -173,8 +171,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
     }
 }
 
-export default connect(({ user, checkin, loading }: ConnectState) => ({
+export default connect(({ user, checkin }: ConnectState) => ({
     currentUser: user.currentUser,
-    currentCheck: checkin.history,
-    loading: loading.models
+    currentCheck: checkin.history
 }))(FormCheck)

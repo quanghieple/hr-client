@@ -20,3 +20,8 @@ export async function getCurrentMonth() {
     let user = await currentUser()
     return firebase.database().ref().child(getCheckinPath(user.uid, new Date())).once("value")
 }
+
+export async function getMonth(month: number, year: number) {
+    let user = await currentUser()
+    return firebase.database().ref().child(getCheckinPath(user.uid, new Date(year, month))).once("value")
+}
