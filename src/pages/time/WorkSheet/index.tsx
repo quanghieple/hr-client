@@ -12,7 +12,9 @@ interface WorkSheetProps {
 }
 
 interface WorkSheetState {
-    current: any
+    current: any;
+    shifts: any;
+    month: any
 }
 
 class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
@@ -20,7 +22,9 @@ class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
     constructor(props: WorkSheetProps) {
         super(props)
         this.state = {
-            current: props.currentMonth
+            current: props.currentMonth,
+            shifts: {"morning": "success", "evening": "warning", "night": "error"},
+            month: new Date().getMonth()
         }
     }
 
@@ -30,7 +34,8 @@ class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
     }
 
     dateCellRender = (value: any) => {
-        const { current } = this.state
+        const { current, shifts, month } = this.state
+        if (month != value.month()) return null;
         let data = current[value.date().toString()]
         if (data) {
             return (
@@ -39,11 +44,11 @@ class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
                         <li key={item}>
                             {data[item].out ? (
                                 <Tooltip title={`${formatMessage({id: 'checkin.shift'})} ${item} (${timeDiff(data[item].in, data[item].out)})`}>
-                                    <Badge status='success' text={`${this.getTimeCheck(data[item].in)} - ${this.getTimeCheck(data[item].out)}`} />
+                                    <Badge status={shifts[item] || 'success'} text={`${this.getTimeCheck(data[item].in)} - ${this.getTimeCheck(data[item].out)}`} />
                                 </Tooltip>
                             ) : (
                                 <Tooltip title={`${formatMessage({id: 'checkin.shift'})} ${item} (${currentDiff(data[item].in)})`}>
-                                    <Badge status='success' text={`${this.getTimeCheck(data[item].in)} - current`} />
+                                    <Badge status={shifts[item] || 'success'} text={`${this.getTimeCheck(data[item].in)} - current`} />
                                 </Tooltip>
                             )}
                         </li>
@@ -60,11 +65,10 @@ class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
     handleChange = (value: any) => {
         let time = new Date()
         if (value.year() == time.getFullYear() && value.month() == time.getMonth()) {
-            this.setState({current: this.props.currentMonth})
+            this.setState({current: this.props.currentMonth, month: time.getMonth()})
         } else {
             getMonth(value.year(), value.month()).then((snap) => {
-                console.log(snap.val())
-                this.setState({current: snap.val() || {}})
+                this.setState({current: snap.val() || {}, month: value.month()})
             })
         }
     }

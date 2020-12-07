@@ -2,6 +2,8 @@ export default {
     'checkin.working-on': 'you are working on shift',
     'checkin.success': 'check in success',
     'checkin.fail': 'check in fail',
+    'checkin.checkin': 'Check in',
+    'checkin.checkout': 'Check out',
     'checkin.shift': "shift",
     'checkin.form.shift': 'Work shift',
     'checkin.form.shift.required': 'Please select your work shift!',

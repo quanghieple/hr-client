@@ -116,6 +116,11 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                     } else {
                         this.setState({checkin: 0, checkedShift: [...this.state.checkedShift, 
                             {in: result.in, out: result.out, shift: check.shift}]})
+                        if(this.formRef.current) {
+                            this.formRef.current.setFieldsValue({
+                                shift: ""
+                            });
+                        }
                     }
                     message.info(`${formatMessage({id: 'checkin.success'})}. shift ${check.shift}`)
                     this.resetForm()
@@ -182,7 +187,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                     </Form.Item>
                     <Form.Item>
                         <Button loading={this.state.submitting} type="primary" htmlType="submit">
-                            Submit
+                            {checkin != 0 ? formatMessage({id: 'checkin.checkout'}) : formatMessage({id: 'checkin.checkin'})}
                         </Button>
                     </Form.Item>
                 </Form>
