@@ -41,18 +41,6 @@ class SecurityView extends Component {
       ],
     },
     {
-      title: formatMessage({ id: 'profile.security.phone' }, {}),
-      description: `${formatMessage(
-        { id: 'profile.security.phone-description' },
-        {},
-      )}：138****8293`,
-      actions: [
-        <a key="Modify">
-          <FormattedMessage id="profile.security.modify" defaultMessage="Modify" />
-        </a>,
-      ],
-    },
-    {
       title: formatMessage({ id: 'profile.security.question' }, {}),
       description: formatMessage({ id: 'profile.security.question-description' }, {}),
       actions: [
@@ -60,28 +48,7 @@ class SecurityView extends Component {
           <FormattedMessage id="profile.security.set" defaultMessage="Set" />
         </a>,
       ],
-    },
-    {
-      title: formatMessage({ id: 'profile.security.email' }, {}),
-      description: `${formatMessage(
-        { id: 'profile.security.email-description' },
-        {},
-      )}：ant***sign.com`,
-      actions: [
-        <a key="Modify">
-          <FormattedMessage id="profile.security.modify" defaultMessage="Modify" />
-        </a>,
-      ],
-    },
-    {
-      title: formatMessage({ id: 'profile.security.mfa' }, {}),
-      description: formatMessage({ id: 'profile.security.mfa-description' }, {}),
-      actions: [
-        <a key="bind">
-          <FormattedMessage id="profile.security.bind" defaultMessage="Bind" />
-        </a>,
-      ],
-    },
+    }
   ];
 
   render() {

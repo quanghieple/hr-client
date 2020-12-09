@@ -37,18 +37,18 @@ class Time extends Component<
     super(props);
     const menuMap = {
       location: <FormattedMessage id="settings.menuMap.location" defaultMessage="Location Settings" />,
-      security: (
-        <FormattedMessage id="settingsandtime.menuMap.security" defaultMessage="Security Settings" />
-      ),
-      binding: (
-        <FormattedMessage id="settingsandtime.menuMap.binding" defaultMessage="Account Binding" />
-      ),
-      notification: (
-        <FormattedMessage
-          id="settingsandtime.menuMap.notification"
-          defaultMessage="New Message Notification"
-        />
-      ),
+      // security: (
+      //   <FormattedMessage id="settingsandtime.menuMap.security" defaultMessage="Security Settings" />
+      // ),
+      // binding: (
+      //   <FormattedMessage id="settingsandtime.menuMap.binding" defaultMessage="Account Binding" />
+      // ),
+      // notification: (
+      //   <FormattedMessage
+      //     id="settingsandtime.menuMap.notification"
+      //     defaultMessage="New Message Notification"
+      //   />
+      // ),
     };
     this.state = {
       mode: 'inline',

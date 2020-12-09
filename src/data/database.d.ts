@@ -13,6 +13,7 @@ export interface CurrentUser {
     disabled?: string;
     role?: string;
     parent?: string;
+    created?: string;
     // notifyCount?: number;
     // unreadCount?: number;
     // group?: string;

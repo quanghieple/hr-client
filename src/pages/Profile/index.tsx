@@ -40,15 +40,15 @@ class Profile extends Component<
       security: (
         <FormattedMessage id="profile.menuMap.security" defaultMessage="Security Settings" />
       ),
-      binding: (
-        <FormattedMessage id="profile.menuMap.binding" defaultMessage="Account Binding" />
-      ),
-      notification: (
-        <FormattedMessage
-          id="profile.menuMap.notification"
-          defaultMessage="New Message Notification"
-        />
-      ),
+      // binding: (
+      //   <FormattedMessage id="profile.menuMap.binding" defaultMessage="Account Binding" />
+      // ),
+      // notification: (
+      //   <FormattedMessage
+      //     id="profile.menuMap.notification"
+      //     defaultMessage="New Message Notification"
+      //   />
+      // ),
     };
     this.state = {
       mode: 'inline',
