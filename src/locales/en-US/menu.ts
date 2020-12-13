@@ -4,6 +4,7 @@ export default {
   'menu.home': 'Home',
   'menu.admin': 'Admin',
   'menu.admin.sub-page': 'Sub-Page',
+  'menu.admin.work-list': 'Work List',
   'menu.users': 'Users',
   'menu.settings': 'Settings',
   'menu.settings.time': 'Check In',
