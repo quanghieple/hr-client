@@ -16,7 +16,7 @@ export enum Role {
 }
 
 export async function getFakeCaptcha(mobile: string) {
-  return request(`/api/login/captcha?mobile=${mobile}`);
+  return request.get(`/api/login/captcha?mobile=${mobile}`);
 }
 
 export async function registerUser(newUser: any) {
@@ -24,14 +24,7 @@ export async function registerUser(newUser: any) {
 }
 
 export async function currentUser(): Promise<firebase.User>{
-  return new Promise((resolve, reject) => {
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user)
-        resolve(user);
-      else
-        reject("User not found")
-    })
-  })
+  return request.get('/users/me')
 }
 
 export async function getProfile(userId: string){
@@ -53,43 +46,12 @@ export async function getCurrentRole() {
   return role;
 }
 
-export async function signInUser(email: any) {
-  return firebase
-    .auth()
-    .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .then(() =>
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(email.userName, email.password)
-        .then((res) => ({
-          ...res,
-          ok: true,
-        }))
-        .catch((error) => ({
-          ...error,
-          ok: false,
-        })),
-    )
-    .catch(/* error */);
+export async function signInUser(user: any) {
+  return request.post('/login', {data: {username: user.userName, password: user.password}})
 }
 
 export async function signOutUser() {
-  return firebase
-    .auth()
-    .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .then(() =>
-      firebase
-        .auth()
-        .signOut()
-        .then((res) => ({
-          res,
-          ok: true,
-        }))
-        .catch((error) => ({
-          error,
-          ok: false,
-        }))
-    )
+  return true;
 }
 
 export async function checkLoginState() {

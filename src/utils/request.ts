@@ -2,7 +2,7 @@
  * request 网络请求工具
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
-import { extend } from 'umi-request';
+import { extend, RequestOptionsInit } from 'umi-request';
 import { notification } from 'antd';
 
 const codeMessage = {
@@ -29,17 +29,24 @@ const codeMessage = {
 const errorHandler = (error: { response: Response }): Response => {
   const { response } = error;
   if (response && response.status) {
+    if (response.status === 401 || response.status === 403) {
+      if (window.location.pathname !== '/user/login') {
+        window.location.href = "/user/login?redirect=" + window.location.href;
+      }
+      return response;
+    }
+
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
 
     notification.error({
-      message: `请求错误 ${status}: ${url}`,
+      message: `Lỗi ${status}: ${url}`,
       description: errorText,
     });
   } else if (!response) {
     notification.error({
-      description: '您的网络发生异常，无法连接服务器',
-      message: '网络异常',
+      description: 'Không thể kết nối với máy chủ, vui làm kiểm tra kết nối của bạn',
+      message: 'Sự Cố Mạng',
     });
   }
   return response;
@@ -48,9 +55,31 @@ const errorHandler = (error: { response: Response }): Response => {
 /**
  * 配置request请求时的默认参数
  */
-const request = extend({
+const AntRequest = extend({
   errorHandler, // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
+  requestType: 'json',
+  prefix: 'http://localhost:9000/api',
+  headers: { 'Content-Type': 'application/json'}
 });
 
+class Request {
+  getToken = () => localStorage.getItem('token') || ""
+
+  public get = (url: string) => {
+    return AntRequest(url, {headers: {authorization: this.getToken()}})
+  }
+
+  public post = (url: string, options?: RequestOptionsInit) => {
+    const headers = options ? (options.headers || {}) : {};
+    return AntRequest.post(url, {...options, headers: {...headers, authorization: this.getToken()}})
+  }
+
+  public put = (url: string, options?: RequestOptionsInit) => {
+    const headers = options ? (options.headers || {}) : {};
+    return AntRequest.put(url, {...options, headers: {...headers, authorization: this.getToken()}})
+  }
+}
+
+const request = new Request();
 export default request;
