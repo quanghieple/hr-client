@@ -35,8 +35,10 @@ const Model: LoginModelType = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield signInUser(payload);
-      if (response.ok) {
-        let role = yield getCurrentRole();
+      if (response) {
+        let user = response.user
+        let role = user.roles[0].name;
+        localStorage.setItem('token', response.token);
         yield put({
           type: 'changeLoginStatus',
           payload: {
@@ -44,7 +46,12 @@ const Model: LoginModelType = {
             currentAuthority: role,
           },
         });
-        
+
+        yield put({
+          type: 'user/saveCurrentUser',
+          payload: user
+        })
+
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params as { redirect: string };
@@ -74,19 +81,19 @@ const Model: LoginModelType = {
     },
 
     *logout(_, { put, call }) {
-      const response = yield call(signOutUser);
-      if (response.ok === true) {
-        reloadAuthorized();
-        const { redirect } = getPageQuery();
-        if (window.location.pathname !== '/user/login' && !redirect) {
-          history.replace({
-            pathname: '/user/login',
-            search: stringify({
-              redirect: window.location.href,
-            }),
-          });
-        }
+      yield call(signOutUser);
+
+      reloadAuthorized();
+      const { redirect } = getPageQuery();
+      if (window.location.pathname !== '/user/login' && !redirect) {
+        history.replace({
+          pathname: '/user/login',
+          search: stringify({
+            redirect: window.location.href,
+          }),
+        });
       }
+      localStorage.removeItem('token');
     },
   },
 
