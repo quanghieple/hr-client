@@ -3,7 +3,7 @@ import { Avatar, Menu, Spin } from 'antd';
 import React from 'react';
 import { history, ConnectProps, connect, FormattedMessage } from 'umi';
 import { ConnectState } from '@/models/connect';
-import { CurrentUser } from '@/models/user';
+import { CurrentUser } from '@/data/database';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 

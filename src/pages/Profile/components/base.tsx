@@ -10,6 +10,7 @@ import { getDownloadUrl, uploadProfileImage } from '@/services/firebase';
 import GeographicView from '@/share/geographic/GeographicView';
 import { CurrentUser } from '@/data/database';
 import PhoneView from './PhoneView';
+import { ConnectState } from '@/models/connect';
 
 const { Option } = Select;
 // const { formatMessage } = useIntl();
@@ -122,7 +123,7 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
       } else {
         user.photoURL = currentUser?.photoURL;
       }
-      user.uid = currentUser?.uid;
+      user.uid = currentUser?.id;
       if (this.state.isAdmin) {
         updateUser(user).then(this.handleUpdateRes)
       } else {
@@ -137,6 +138,8 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
 
   render() {
     const { currentUser } = this.props;
+    console.log(currentUser);
+
     const { isAdmin } = this.state;
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
@@ -160,7 +163,7 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
               <Input disabled={!isAdmin}/>
             </Form.Item>
             <Form.Item
-              name="displayName"
+              name="firstName"
               label={formatMessage({ id: 'profile.basic.nickname' })}
               rules={[
                 {
@@ -261,7 +264,7 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
           </Form>
         </div>
         <div className={styles.right}>
-          <AvatarView avatar={this.getAvatarURL()} 
+          <AvatarView avatar={this.getAvatarURL()}
                       email={currentUser?.email || "Anonymous"}
                       onChange={this.onChangeAvatar} />
         </div>
@@ -270,8 +273,6 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
   }
 }
 
-export default connect(
-  ({ profile }: { profile: { currentUser: CurrentUser } }) => ({
-    currentUser: profile.currentUser,
-  }),
-)(BaseView);
+export default connect(({ user }: ConnectState) => ({
+  currentUser: user.currentUser
+}))(BaseView);

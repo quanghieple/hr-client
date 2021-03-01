@@ -3,7 +3,7 @@ import { PageLoading } from '@ant-design/pro-layout';
 import { Redirect, connect, ConnectProps } from 'umi';
 import { stringify } from 'querystring';
 import { ConnectState } from '@/models/connect';
-import { CurrentUser } from '@/models/user';
+import { CurrentUser } from '@/data/database';
 
 interface SecurityLayoutProps extends ConnectProps {
   loading?: boolean;
@@ -25,8 +25,6 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
     });
     const { dispatch } = this.props;
     if (dispatch) {
-      console.log("fetch");
-
       dispatch({
         type: 'user/fetchCurrent',
       });
@@ -50,10 +48,10 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
 
   render() {
     const { isReady } = this.state;
-    const { children, loading } = this.props;
+    const { children} = this.props;
     // You can replace it to your authentication rule (such as check token exists)
 
-    if (!isReady || loading) {
+    if (!isReady) {
       return <PageLoading />;
     }
     if (!localStorage.getItem('token') && window.location.pathname !== '/user/login') {

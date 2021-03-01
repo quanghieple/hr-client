@@ -49,13 +49,13 @@ const GlobalModel: GlobalModelType = {
       const unreadCount: number = yield select(
         (state: ConnectState) => state.global.notices.filter((item) => !item.read).length,
       );
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: data.length,
-          unreadCount,
-        },
-      });
+      // yield put({
+      //   type: 'user/changeNotifyCount',
+      //   payload: {
+      //     totalCount: data.length,
+      //     unreadCount,
+      //   },
+      // });
     },
     *clearNotices({ payload }, { put, select }) {
       yield put({
@@ -66,13 +66,13 @@ const GlobalModel: GlobalModelType = {
       const unreadCount: number = yield select(
         (state: ConnectState) => state.global.notices.filter((item) => !item.read).length,
       );
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: count,
-          unreadCount,
-        },
-      });
+      // yield put({
+      //   type: 'user/changeNotifyCount',
+      //   payload: {
+      //     totalCount: count,
+      //     unreadCount,
+      //   },
+      // });
     },
     *changeNoticeReadState({ payload }, { put, select }) {
       const notices: NoticeItem[] = yield select((state: ConnectState) =>
@@ -90,13 +90,13 @@ const GlobalModel: GlobalModelType = {
         payload: notices,
       });
 
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: notices.length,
-          unreadCount: notices.filter((item) => !item.read).length,
-        },
-      });
+      // yield put({
+      //   type: 'user/changeNotifyCount',
+      //   payload: {
+      //     totalCount: notices.length,
+      //     unreadCount: notices.filter((item) => !item.read).length,
+      //   },
+      // });
     },
   },
 
