@@ -4,15 +4,15 @@ import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { queryRule} from './service';
-import { CurrentUser } from '@/data/database';
+import { User } from '@/data/database';
 import { GeographicType } from '@/data/share';
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { Link } from 'umi';
 
 const TableList: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<CurrentUser>();
-  const columns: ProColumns<CurrentUser>[] = [
+  const [row, setRow] = useState<User>();
+  const columns: ProColumns<User>[] = [
     {
       title: 'Email',
       dataIndex: 'email',
@@ -102,7 +102,7 @@ const TableList: React.FC<{}> = () => {
 
   return (
     <PageContainer>
-      <ProTable<CurrentUser>
+      <ProTable<User>
         actionRef={actionRef}
         rowKey="key"
         search={{
@@ -129,7 +129,7 @@ const TableList: React.FC<{}> = () => {
         closable={false}
       >
         {row?.uid && (
-          <ProDescriptions<CurrentUser>
+          <ProDescriptions<User>
             column={2}
             title={row?.displayName}
             request={async () => ({

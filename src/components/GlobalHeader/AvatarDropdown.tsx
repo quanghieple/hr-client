@@ -3,12 +3,12 @@ import { Avatar, Menu, Spin } from 'antd';
 import React from 'react';
 import { history, ConnectProps, connect, FormattedMessage } from 'umi';
 import { ConnectState } from '@/models/connect';
-import { CurrentUser } from '@/models/user';
+import { User } from '@/data/database';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
 export interface GlobalHeaderRightProps extends Partial<ConnectProps> {
-  currentUser?: CurrentUser;
+  currentUser?: User;
   menu?: boolean;
 }
 
@@ -68,7 +68,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
           <Avatar size="small" className={styles.avatar} src={currentUser.photoURL || '/default_avatar.jpg'} alt="avatar" />
-          <span className={`${styles.name} anticon`}>{currentUser.firstName || "Anonymous"}</span>
+          <span className={`${styles.name} anticon`}>{currentUser.name || "Anonymous"}</span>
         </span>
       </HeaderDropdown>
     ) : (

@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { firebase } from '@/utils/firebase';
-import * as functions from '@/utils/functions';
+import { CREATE_USER } from '@/api/UserApi';
 
 export interface LoginParamsType {
   userName: string;
@@ -20,7 +20,7 @@ export async function getFakeCaptcha(mobile: string) {
 }
 
 export async function registerUser(newUser: any) {
-  return functions.post("addAuthenUser", {user : newUser});
+  return request.post(CREATE_USER, {data : newUser});
 }
 
 export async function currentUser(): Promise<firebase.User>{

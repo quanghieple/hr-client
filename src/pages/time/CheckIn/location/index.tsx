@@ -5,7 +5,7 @@ import FormCheck from '../form';
 import { getLocations } from '@/pages/settings/Time/service';
 import { connect, formatMessage } from 'umi';
 import { ConnectState } from '@/models/connect';
-import { CurrentUser, LocationCheckIn } from '@/data/database';
+import { User, LocationCheckIn } from '@/data/database';
 import { getDistance } from '@/utils/maps';
 import { localtionCheck } from '@/services/checkin';
 
@@ -18,7 +18,7 @@ interface LocationState {
 }
 
 interface LocationProps {
-    currentUser: CurrentUser
+    currentUser: User
 }
 
 const AnyReactComponent = (lat: any, lng: any) => <PushpinOutlined rotate={90} style={{ fontSize: '24px', color: 'red' }} />;
@@ -42,9 +42,9 @@ class LocationCheck extends React.Component<LocationProps, LocationState> {
               var pos = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
-              }; 
-              this.setState({center: pos})   
-              
+              };
+              this.setState({center: pos})
+
               getLocations(this.props.currentUser.parent).then((locations:  Array<LocationCheckIn>) => {
                 let isOk = locations.some(loc => getDistance(loc.coord, pos) <= loc.radius)
                 if (!isOk) {
@@ -88,7 +88,7 @@ class LocationCheck extends React.Component<LocationProps, LocationState> {
                     onGoogleApiLoaded={({ map, maps }) => this.handleApiLoaded(map, maps)}
                     defaultZoom={this.state.zoom}
                     >
-                        <AnyReactComponent 
+                        <AnyReactComponent
                         lat={this.state.center.lat}
                         lng={this.state.center.lng}
                         />

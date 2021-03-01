@@ -1,4 +1,4 @@
-import { CurrentUser } from "@/data/database";
+import { User } from "@/data/database";
 import { ConnectState } from "@/models/connect";
 import { QRcheck } from "@/services/checkin";
 import { formatTime } from "@/utils/date";
@@ -16,7 +16,7 @@ interface LocationState {
 }
 
 interface LocationProps {
-    currentUser: CurrentUser;
+    currentUser: User;
 }
 
 class QRScane extends React.Component<LocationProps, LocationState> {
@@ -34,7 +34,7 @@ class QRScane extends React.Component<LocationProps, LocationState> {
         if (data) {
             this.setState({
                 qrResult: data,
-                checkTime: new Date().getTime(), 
+                checkTime: new Date().getTime(),
                 errorMessage: ""
             })
         } else {

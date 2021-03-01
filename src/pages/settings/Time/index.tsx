@@ -9,13 +9,13 @@ import SecurityView from './components/security';
 import styles from './style.less';
 import LocationSetting from './components/location';
 import { ConnectState } from '@/models/connect';
-import { CurrentUser } from '@/data/database';
+import { User } from '@/data/database';
 
 const { Item } = Menu;
 
 interface TimeProps {
   dispatch: Dispatch;
-  currentUser: CurrentUser;
+  currentUser: User;
 }
 
 type TimeStateKeys = 'location' | 'security' | 'binding' | 'notification';

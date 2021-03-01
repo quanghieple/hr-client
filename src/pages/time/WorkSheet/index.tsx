@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { Badge, Calendar, Tooltip } from "antd";
 import { connect, formatMessage } from "umi";
 import { ConnectState } from "@/models/connect";
-import { CurrentUser } from "@/data/database";
+import { User } from "@/data/database";
 import { currentDiff, timeDiff } from "@/utils/date";
 import { getMonth } from "@/services/checkin";
 
 interface WorkSheetProps {
-    currentUser: CurrentUser;
+    currentUser: User;
     currentMonth: any
 }
 

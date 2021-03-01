@@ -3,7 +3,7 @@ import GoogleMapReact, { Coords } from 'google-map-react';
 import React, { Component } from "react";
 import { addLocation, getLocations } from '../service';
 import { connect } from 'umi';
-import { CurrentUser, LocationCheckIn } from '@/data/database';
+import { User, LocationCheckIn } from '@/data/database';
 import { Button, Card, Input, Modal, Slider, Spin } from 'antd';
 import { DeleteOutlined, PushpinOutlined } from '@ant-design/icons';
 
@@ -19,7 +19,7 @@ interface LocationState {
 }
 
 interface LocationProps {
-    currentUser: CurrentUser;
+    currentUser: User;
 }
 
 const marks = {
@@ -52,7 +52,7 @@ class LocationSetting extends Component<LocationProps, LocationState> {
     }
 
     componentDidMount() {
-        getLocations(this.props.currentUser.uid).then((locations) => {
+        getLocations(this.props.currentUser.id).then((locations) => {
             this.setState({locations: locations, currentCoord: locations[0].coord})
         })
     }
@@ -65,7 +65,7 @@ class LocationSetting extends Component<LocationProps, LocationState> {
     submitHandler = () => {
         let newLocation = [{name: this.state.name, radius: this.state.radius, coord: this.state.currentCoord}, ...this.state.locations]
         this.setState({openSetRadius: false, locations: []})
-        addLocation(this.props.currentUser.uid, newLocation).then((res) => {
+        addLocation(this.props.currentUser.id, newLocation).then((res) => {
             setTimeout(() => {
                 this.setState({locations: newLocation})
             }, 500)
@@ -90,7 +90,7 @@ class LocationSetting extends Component<LocationProps, LocationState> {
     updateName = (index: number, name: string) => {
         let newLocation = this.state.locations
         newLocation[index].name = name
-        addLocation(this.props.currentUser.uid, newLocation)
+        addLocation(this.props.currentUser.id, newLocation)
         this.setState({ locations: newLocation })
     }
 
@@ -98,7 +98,7 @@ class LocationSetting extends Component<LocationProps, LocationState> {
         let newLocation = this.state.locations
         newLocation.splice(index, 1)
         this.setState({openSetRadius: false, locations: []})
-        addLocation(this.props.currentUser.uid, newLocation)
+        addLocation(this.props.currentUser.id, newLocation)
         setTimeout(() => {
             this.setState({locations: newLocation})
         }, 500)

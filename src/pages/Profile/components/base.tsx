@@ -1,5 +1,5 @@
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Input, Select, Upload, Form, message, Alert } from 'antd';
+import { Button, Input, Upload, Form, message, Alert, DatePicker } from 'antd';
 import { connect, FormattedMessage, formatMessage } from 'umi';
 import React, { Component, useState } from 'react';
 
@@ -7,11 +7,10 @@ import { getAuthority } from '@/utils/authority';
 import styles from './BaseView.less';
 import { updateCurrentUser, updateUser } from '../service';
 import { getDownloadUrl, uploadProfileImage } from '@/services/firebase';
-import GeographicView from '@/share/geographic/GeographicView';
-import { CurrentUser } from '@/data/database';
-import PhoneView from './PhoneView';
+import { User } from '@/data/database';
+import { ConnectState } from '@/models/connect';
+import moment from 'moment';
 
-const { Option } = Select;
 // const { formatMessage } = useIntl();
 
 const AvatarView = ({ avatar, email, onChange }: { avatar: string, email: string, onChange: Function }) => {
@@ -61,7 +60,7 @@ const validatorPhone = (rule: any, value: string, callback: (message?: string) =
 };
 
 interface BaseViewProps {
-  currentUser?: CurrentUser;
+  currentUser: User;
 }
 
 interface BaseViewState {
@@ -122,7 +121,7 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
       } else {
         user.photoURL = currentUser?.photoURL;
       }
-      user.uid = currentUser?.uid;
+      user.id = currentUser?.id;
       if (this.state.isAdmin) {
         updateUser(user).then(this.handleUpdateRes)
       } else {
@@ -137,6 +136,8 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
 
   render() {
     const { currentUser } = this.props;
+    const updateUser = {...currentUser, birth: moment(currentUser.birth)}
+
     const { isAdmin } = this.state;
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
@@ -144,7 +145,7 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
           <Form
             layout="vertical"
             onFinish={this.handleFinish}
-            initialValues={currentUser}
+            initialValues={updateUser}
             hideRequiredMark
           >
             <Form.Item
@@ -160,60 +161,22 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
               <Input disabled={!isAdmin}/>
             </Form.Item>
             <Form.Item
-              name="displayName"
-              label={formatMessage({ id: 'profile.basic.nickname' })}
+              name="name"
+              label={formatMessage({ id: 'profile.basic.name' })}
               rules={[
                 {
                   required: true,
-                  message: formatMessage({ id: 'profile.basic.nickname-message' }, {}),
+                  message: formatMessage({ id: 'profile.basic.name-message' }, {}),
                 },
               ]}
             >
               <Input />
             </Form.Item>
             <Form.Item
-              name="profile"
-              label={formatMessage({ id: 'profile.basic.profile' })}
-              // rules={[
-              //   {
-              //     required: true,
-              //     message: formatMessage({ id: 'profile.basic.profile-message' }, {}),
-              //   },
-              // ]}
+              name="birth"
+              label={formatMessage({ id: 'profile.basic.birth' })}
             >
-              <Input.TextArea
-                placeholder={formatMessage({ id: 'profile.basic.profile-placeholder' })}
-                rows={4}
-              />
-            </Form.Item>
-            <Form.Item
-              name="country"
-              label={formatMessage({ id: 'profile.basic.country' })}
-              // rules={[
-              //   {
-              //     required: true,
-              //     message: formatMessage({ id: 'profile.basic.country-message' }, {}),
-              //   },
-              // ]}
-            >
-              <Select style={{ maxWidth: 220 }}>
-                <Option value="Vie">Viet Nam</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name="geographic"
-              label={formatMessage({ id: 'profile.basic.geographic' })}
-              // rules={[
-              //   {
-              //     required: true,
-              //     message: formatMessage({ id: 'profile.basic.geographic-message' }, {}),
-              //   },
-              //   {
-              //     validator: validatorGeographic,
-              //   },
-              // ]}
-            >
-              <GeographicView />
+              <DatePicker format={"YYYY-MM-DD"} />
             </Form.Item>
             <Form.Item
               name="address"
@@ -228,7 +191,7 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
               <Input />
             </Form.Item>
             <Form.Item
-              name="phoneNumber"
+              name="phone"
               label={formatMessage({ id: 'profile.basic.phone' })}
               rules={[
                 {
@@ -238,7 +201,16 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
                 { validator: validatorPhone },
               ]}
             >
-              <PhoneView isAdmin={isAdmin} />
+              <Input disabled={!isAdmin} />
+            </Form.Item>
+            <Form.Item
+              name="profile"
+              label={formatMessage({ id: 'profile.basic.profile' })}
+            >
+              <Input.TextArea
+                placeholder={formatMessage({ id: 'profile.basic.profile-placeholder' })}
+                rows={4}
+              />
             </Form.Item>
             <Form.Item>
               <Button htmlType="submit" type="primary" loading={this.state.updating}>
@@ -261,7 +233,7 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
           </Form>
         </div>
         <div className={styles.right}>
-          <AvatarView avatar={this.getAvatarURL()} 
+          <AvatarView avatar={this.getAvatarURL()}
                       email={currentUser?.email || "Anonymous"}
                       onChange={this.onChangeAvatar} />
         </div>
@@ -270,8 +242,6 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
   }
 }
 
-export default connect(
-  ({ profile }: { profile: { currentUser: CurrentUser } }) => ({
-    currentUser: profile.currentUser,
-  }),
-)(BaseView);
+export default connect(({ user }: ConnectState) => ({
+  currentUser: user.currentUser
+}))(BaseView);

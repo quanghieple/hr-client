@@ -4,14 +4,14 @@ import { Tag, message } from 'antd';
 import groupBy from 'lodash/groupBy';
 import moment from 'moment';
 import { NoticeItem } from '@/models/global';
-import { CurrentUser } from '@/models/user';
+import { User } from '@/data/database';
 import { ConnectState } from '@/models/connect';
 import NoticeIcon from '../NoticeIcon';
 import styles from './index.less';
 
 export interface GlobalHeaderRightProps extends Partial<ConnectProps> {
   notices?: NoticeItem[];
-  currentUser?: CurrentUser;
+  currentUser?: User;
   fetchingNotices?: boolean;
   onNoticeVisibleChange?: (visible: boolean) => void;
   onNoticeClear?: (tabName?: string) => void;

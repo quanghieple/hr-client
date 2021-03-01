@@ -1,4 +1,4 @@
-import { CurrentUser } from "@/data/database";
+import { User } from "@/data/database";
 
 export interface TableListPagination {
   total: number;
@@ -7,7 +7,7 @@ export interface TableListPagination {
 }
 
 export interface TableListData {
-  list: CurrentUser[];
+  list: User[];
   pagination: Partial<TableListPagination>;
 }
 

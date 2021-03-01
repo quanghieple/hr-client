@@ -3,7 +3,7 @@ import { Alert, Badge, Button, Form, Input, message, notification, Select } from
 import { getCurrentShift } from '@/services/checkin';
 import { connect, formatMessage } from 'umi';
 import { ConnectState } from '@/models/connect';
-import { CurrentUser } from '@/data/database';
+import { User } from '@/data/database';
 import { timeDiff } from '@/utils/date';
 import { FormInstance } from 'antd/lib/form';
 
@@ -12,7 +12,7 @@ interface FormCheckProps {
     alertType: 'success' | 'info' | 'warning' | 'error';
     handleSubmit: Function;
     resetForm: Function;
-    currentUser: CurrentUser;
+    currentUser: User;
     currentCheck: any;
 }
 
@@ -67,7 +67,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
             checkedShift: [],
         }
     }
-    
+
     componentDidMount() {
         getCurrentShift(this.props.currentUser.uid).then((snap) => {
             let value = snap.val();
@@ -114,7 +114,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                     if(result.type == "in") {
                         this.setState({checkin: result.in, shift: check.shift})
                     } else {
-                        this.setState({checkin: 0, checkedShift: [...this.state.checkedShift, 
+                        this.setState({checkin: 0, checkedShift: [...this.state.checkedShift,
                             {in: result.in, out: result.out, shift: check.shift}]})
                         if(this.formRef.current) {
                             this.formRef.current.setFieldsValue({
@@ -135,7 +135,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                 this.openNotification(formatMessage({id: 'checkin.fail'}), errorMess)
                 this.resetForm()
             }
-            
+
         }).catch((err: any) => {
             this.openNotification(formatMessage({id: 'checkin.fail'}), formatMessage({id: 'error.it.help'}))
         })
@@ -178,7 +178,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                             })}
                         </Select>
                     </Form.Item>
-    
+
                     <Form.Item
                         label={formatMessage({id: 'checkin.form.note'})}
                         name="note"

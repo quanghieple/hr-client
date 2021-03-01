@@ -1,19 +1,15 @@
-import { formatMessage } from "umi";
 import moment from 'moment';
-import GeographicView from "@/share/geographic/GeographicView";
 import styles from "./index.less";
 import React, { useState } from "react";
 import {
   Form,
   Input,
-  Tooltip,
   Select,
   Button,
   Alert,
   message,
   Row, DatePicker
 } from "antd";
-import { QuestionCircleOutlined } from "@ant-design/icons";
 import { registerUser } from "@/services/login";
 import Col from "antd/es/grid/col";
 
@@ -159,7 +155,7 @@ const RegistrationForm = () => {
       <Row>
         <Col span={12}>
           <Form.Item
-            name="displayName"
+            name="name"
             label="Name"
             rules={[
               {
@@ -198,79 +194,7 @@ const RegistrationForm = () => {
             </Select>
           </Form.Item>
         </Col>
-        <Col span={12}>
-          <Form.Item
-            name="title"
-            label={
-              <span>
-                Title&nbsp;
-            <Tooltip title="What are your title in your company?">
-                  <QuestionCircleOutlined />
-                </Tooltip>
-              </span>
-            }
-          >
-            <Input />
-          </Form.Item>
-        </Col>
       </Row>
-    <Row>
-      <Col span={12}>
-      <Form.Item
-            name="country"
-            label={formatMessage({ id: 'profile.basic.country' })}
-          >
-            <Select style={{ maxWidth: 220 }}>
-              <Option value="Vie">Viet Nam</Option>
-            </Select>
-          </Form.Item>
-      </Col>
-      <Col span={12}>
-      <Form.Item
-            name="geographic"
-            label={formatMessage({ id: 'profile.basic.geographic' })}
-          >
-            <GeographicView />
-          </Form.Item>
-      </Col>
-    </Row>
-
-      {/* 
-      <Form.Item
-        label="Captcha"
-        extra="We must make sure that your are a human."
-      >
-        <Row gutter={8}>
-          <Col span={12}>
-            <Form.Item
-              name="captcha"
-              noStyle
-              rules={[
-                {
-                  required: true,
-                  message: "Please input the captcha you got!",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Button>Get captcha</Button>
-          </Col>
-        </Row>
-      </Form.Item>
-
-      <Form.Item
-        name="agreement"
-        valuePropName="checked"
-        {...tailFormItemLayout}
-      >
-        <Checkbox>
-          I have read the <a href="">agreement</a>
-        </Checkbox>
-      </Form.Item>
-       */}
       <Form.Item {...tailFormItemLayout}>
         <Button type="primary" htmlType="submit" loading={registing}>
           Register

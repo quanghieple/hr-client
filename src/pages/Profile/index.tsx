@@ -8,13 +8,14 @@ import BindingView from './components/binding';
 import NotificationView from './components/notification';
 import SecurityView from './components/security';
 import styles from './style.less';
-import { CurrentUser } from '@/data/database';
+import { User } from '@/data/database';
+import { ConnectState } from '@/models/connect';
 
 const { Item } = Menu;
 
 interface ProfileProps {
   dispatch: Dispatch;
-  currentUser: CurrentUser;
+  currentUser: User;
 }
 
 type ProfileStateKeys = 'base' | 'security' | 'binding' | 'notification';
@@ -59,19 +60,11 @@ class Profile extends Component<
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'profile/fetchUserUpdate',
-    });
     window.addEventListener('resize', this.resize);
     this.resize();
   }
 
   componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'profile/removeUserUpdate'
-    })
     window.removeEventListener('resize', this.resize);
   }
 
@@ -133,7 +126,8 @@ class Profile extends Component<
 
   render() {
     const { currentUser } = this.props;
-    if (!currentUser.uid) {
+
+    if (!currentUser.id) {
       return '';
     }
     const { mode, selectKey } = this.state;
@@ -166,8 +160,6 @@ class Profile extends Component<
   }
 }
 
-export default connect(
-  ({ profile }: { profile: { currentUser: CurrentUser } }) => ({
-    currentUser: profile.currentUser,
-  }),
-)(Profile);
+export default connect(({ user }: ConnectState) => ({
+  currentUser: user.currentUser
+}))(Profile);

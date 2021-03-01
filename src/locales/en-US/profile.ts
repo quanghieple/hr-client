@@ -9,8 +9,9 @@ export default {
     'profile.basic.change-avatar': 'Change avatar',
     'profile.basic.email': 'Email',
     'profile.basic.email-message': 'Please input your email!',
-    'profile.basic.nickname': 'Nickname',
-    'profile.basic.nickname-message': 'Please input your Nickname!',
+    'profile.basic.name': 'Name',
+    'profile.basic.name-message': 'Please input your Name!',
+    'profile.basic.birth': 'Birthdate',
     'profile.basic.profile': 'Personal profile',
     'profile.basic.profile-message': 'Please input your personal profile!',
     'profile.basic.profile-placeholder': 'Brief introduction to yourself',
@@ -68,4 +69,3 @@ export default {
     'profile.update.success': 'Profile updated successfully',
     'profile.update.fail': 'Profile updated failed'
   };
-  

@@ -1,19 +1,19 @@
 import { GeographicType } from "@/data/share";
 
-export interface CurrentUser {
-    displayName?: string;
-    photoURL?: string;
-    uid: string;
+export interface User {
+    id: number;
+    name?: string;
     email?: string;
-    title?: string;
-    country?: string;
-    geographic?: GeographicType;
+    phone?: string;
+    roles?: any[];
+    created?: Date;
+    birth?: Date;
+
     address?: string;
-    phoneNumber?: string;
     disabled?: string;
-    role?: string;
-    parent?: string;
-    created?: string;
+    parent?: number;
+    photoURL?: string;
+    profile?: string;
     // notifyCount?: number;
     // unreadCount?: number;
     // group?: string;

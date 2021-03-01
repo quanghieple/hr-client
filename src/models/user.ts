@@ -1,19 +1,10 @@
 import { Effect, Reducer } from 'umi';
 
 import { queryCurrent} from '@/services/user';
-
-export interface CurrentUser {
-  id: number;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
-  roles?: any[];
-  created?: Date;
-}
+import { User } from '@/data/database';
 
 export interface UserModelState {
-  currentUser?: CurrentUser;
+  currentUser?: User;
 }
 
 export interface UserModelType {
@@ -24,7 +15,7 @@ export interface UserModelType {
   };
   reducers: {
     saveCurrentUser: Reducer<UserModelState>;
-    changeNotifyCount: Reducer<UserModelState>;
+    // changeNotifyCount: Reducer<UserModelState>;
   };
 }
 
@@ -47,26 +38,28 @@ const UserModel: UserModelType = {
 
   reducers: {
     saveCurrentUser(state, action) {
+      console.log("payload", action.payload);
+
       return {
         ...state,
         currentUser: action.payload || {},
       };
     },
-    changeNotifyCount(
-      state = {
-        currentUser: undefined,
-      },
-      action,
-    ) {
-      return {
-        ...state,
-        currentUser: {
-          ...state.currentUser,
-          notifyCount: action.payload.totalCount,
-          unreadCount: action.payload.unreadCount,
-        },
-      };
-    },
+    // changeNotifyCount(
+    //   state = {
+    //     currentUser: undefined,
+    //   },
+    //   action,
+    // ) {
+    //   return {
+    //     ...state,
+    //     currentUser: {
+    //       ...state.currentUser,
+    //       notifyCount: action.payload.totalCount,
+    //       unreadCount: action.payload.unreadCount,
+    //     },
+    //   };
+    // },
   },
 };
 
