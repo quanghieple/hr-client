@@ -5,7 +5,6 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { queryRule} from './service';
 import { User } from '@/data/database';
-import { GeographicType } from '@/data/share';
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { Link } from 'umi';
 
@@ -31,28 +30,26 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: 'Phone',
-      dataIndex: 'phoneNumber',
+      dataIndex: 'phone',
       copyable: true,
       sorter: true,
       valueType: 'textarea',
     },
     {
       title: 'Name',
-      dataIndex: 'displayName',
+      dataIndex: 'name',
       sorter: true,
     },
     {
-      title: 'Country',
-      dataIndex: 'country'
-    },
-    {
-      title: 'Province',
-      dataIndex: 'geographic',
-      renderText: (geo: GeographicType) => geo ? `${geo.province.label} - ${geo.city.label}` : ""
-    },
-    {
       title: 'Status',
-      dataIndex: 'disabled'
+      dataIndex: 'disabled',
+      render: (_ , record) => {
+        if (record.disabled) {
+          return "Disabled";
+        } else {
+          return "Enable";
+        }
+      }
     },
     {
       title: 'Address',
@@ -94,7 +91,7 @@ const TableList: React.FC<{}> = () => {
             Disabled
           </a>
           <Divider type="vertical" />
-          <Link to={`/other/profile?id=${record.uid}`}>Edit</Link>
+          <Link to={`/other/profile?id=${record.id}`}>Edit</Link>
         </>
       ),
     },
@@ -128,15 +125,15 @@ const TableList: React.FC<{}> = () => {
         }}
         closable={false}
       >
-        {row?.uid && (
+        {row?.id && (
           <ProDescriptions<User>
             column={2}
-            title={row?.displayName}
+            title={row?.name}
             request={async () => ({
               data: row || {},
             })}
             params={{
-              id: row?.uid,
+              id: row?.id,
             }}
             columns={columns}
           />

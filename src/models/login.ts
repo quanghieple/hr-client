@@ -1,7 +1,7 @@
 import { stringify } from 'querystring';
 import { history, Reducer, Effect } from 'umi';
 
-import { getCurrentRole, signInUser, signOutUser } from '@/services/login';
+import { signInUser, signOutUser } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
@@ -10,7 +10,7 @@ export interface StateType {
   status?: 'ok' | 'error';
   type?: string;
   errorMessage?: string;
-  currentAuthority?: 'user' | 'guest' | 'admin';
+  currentAuthority?: 'user' | 'manager' | 'admin';
 }
 
 export interface LoginModelType {
@@ -37,7 +37,7 @@ const Model: LoginModelType = {
       const response = yield signInUser(payload);
       if (response) {
         let user = response.user
-        let role = user.roles[0].name;
+        let role = user.role.name.toLowerCase();
         localStorage.setItem('token', response.token);
         yield put({
           type: 'changeLoginStatus',

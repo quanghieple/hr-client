@@ -10,6 +10,7 @@ import SecurityView from './components/security';
 import styles from './style.less';
 import { User } from '@/data/database';
 import { ConnectState } from '@/models/connect';
+import { getUserForUpdate } from './service';
 
 const { Item } = Menu;
 
@@ -26,6 +27,7 @@ interface ProfileState {
   };
   selectKey: ProfileStateKeys;
   updateOther: boolean;
+  user: User;
 }
 
 class Profile extends Component<
@@ -56,10 +58,12 @@ class Profile extends Component<
       menuMap,
       selectKey: 'base',
       updateOther: false,
+      user: {id : -1}
     };
   }
 
   componentDidMount() {
+    getUserForUpdate().then(user => this.setState({user: user}))
     window.addEventListener('resize', this.resize);
     this.resize();
   }
@@ -106,11 +110,11 @@ class Profile extends Component<
     });
   };
 
-  renderChildren = () => {
+  renderChildren = (user: User) => {
     const { selectKey } = this.state;
     switch (selectKey) {
       case 'base':
-        return <BaseView />;
+        return <BaseView user={user} />;
       case 'security':
         return <SecurityView />;
       case 'binding':
@@ -125,9 +129,9 @@ class Profile extends Component<
   };
 
   render() {
-    const { currentUser } = this.props;
+    const { user } = this.state;
 
-    if (!currentUser.id) {
+    if (user.id < 0) {
       return '';
     }
     const { mode, selectKey } = this.state;
@@ -152,7 +156,7 @@ class Profile extends Component<
           </div>
           <div className={styles.right}>
             <div className={styles.title}>{this.getRightTitle()}</div>
-            {this.renderChildren()}
+            {this.renderChildren(user)}
           </div>
         </div>
       </GridContent>

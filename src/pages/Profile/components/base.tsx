@@ -1,6 +1,6 @@
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Input, Upload, Form, message, Alert, DatePicker } from 'antd';
-import { connect, FormattedMessage, formatMessage } from 'umi';
+import { connect, Dispatch, formatMessage, FormattedMessage, useIntl } from 'umi';
 import React, { Component, useState } from 'react';
 
 import { getAuthority } from '@/utils/authority';
@@ -11,7 +11,7 @@ import { User } from '@/data/database';
 import { ConnectState } from '@/models/connect';
 import moment from 'moment';
 
-// const { formatMessage } = useIntl();
+// const formatMessage = useIntl().formatMessage;
 
 const AvatarView = ({ avatar, email, onChange }: { avatar: string, email: string, onChange: Function }) => {
   const [url, setUrl] = useState(avatar);
@@ -61,6 +61,8 @@ const validatorPhone = (rule: any, value: string, callback: (message?: string) =
 
 interface BaseViewProps {
   currentUser: User;
+  user: User;
+  dispatch: Dispatch;
 }
 
 interface BaseViewState {
@@ -72,7 +74,6 @@ interface BaseViewState {
 
 class BaseView extends Component<BaseViewProps, BaseViewState> {
   view: HTMLDivElement | undefined = undefined;
-
   constructor(props: BaseViewProps) {
     super(props);
     this.state = {
@@ -100,16 +101,17 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
   };
 
   handleUpdateRes = (res: any) => {
-    if (res.ok) {
+    if (res.code) {
       message.info(formatMessage({id: 'profile.update.success'}))
     } else {
-      this.setState({errorMessage: res.message || ""})
+      this.setState({errorMessage: formatMessage({id: res.msg || 'error.it.help'})})
     }
     this.setState({updating: false});
   }
 
   handleFinish  = (user: any) => {
     const { currentUser } = this.props;
+    const { dispatch } = this.props;
     this.setState({updating: true});
     this.setState({errorMessage: ""})
     if(this.state.avatar === "loading") {
@@ -121,11 +123,17 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
       } else {
         user.photoURL = currentUser?.photoURL;
       }
-      user.id = currentUser?.id;
-      if (this.state.isAdmin) {
-        updateUser(user).then(this.handleUpdateRes)
+      console.log(user, currentUser);
+
+      if (user.id === currentUser.id) {
+        updateCurrentUser(user).then(res => {
+          this.handleUpdateRes(res);
+          if (dispatch) {
+            dispatch({type: 'user/fetchCurrent'})
+          }
+        })
       } else {
-        updateCurrentUser(user).then(this.handleUpdateRes)
+        updateUser(user).then(this.handleUpdateRes)
       }
     }
   };
@@ -135,8 +143,8 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
   }
 
   render() {
-    const { currentUser } = this.props;
-    const updateUser = {...currentUser, birth: moment(currentUser.birth)}
+    const { user } = this.props;
+    const updateUser = {...user, birth: moment(user.birth)}
 
     const { isAdmin } = this.state;
     return (
@@ -148,6 +156,12 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
             initialValues={updateUser}
             hideRequiredMark
           >
+            <Form.Item
+              name="id"
+              hidden={true}
+            >
+              <Input />
+            </Form.Item>
             <Form.Item
               name="email"
               label={formatMessage({ id: 'profile.basic.email' })}
@@ -234,7 +248,7 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
         </div>
         <div className={styles.right}>
           <AvatarView avatar={this.getAvatarURL()}
-                      email={currentUser?.email || "Anonymous"}
+                      email={user.email || "Anonymous"}
                       onChange={this.onChangeAvatar} />
         </div>
       </div>

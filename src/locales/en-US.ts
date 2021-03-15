@@ -8,6 +8,7 @@ import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
 import profile from './en-US/profile';
 import checkin from './en-US/checkin';
+import response from './en-US/response';
 
 export default {
   'navBar.lang': 'Languages',
@@ -27,5 +28,6 @@ export default {
   ...login,
   ...firebase,
   ...profile,
-  ...checkin
+  ...checkin,
+  ...response
 };

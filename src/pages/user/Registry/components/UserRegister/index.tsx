@@ -1,6 +1,7 @@
 import moment from 'moment';
 import styles from "./index.less";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useIntl } from 'umi';
 import {
   Form,
   Input,
@@ -12,6 +13,7 @@ import {
 } from "antd";
 import { registerUser } from "@/services/login";
 import Col from "antd/es/grid/col";
+import { getAllRoles } from '@/services/user';
 
 const { Option } = Select;
 const dateFormat = 'YYYY/MM/DD';
@@ -40,20 +42,28 @@ const tailFormItemLayout = {
 };
 
 const RegistrationForm = () => {
+  const formatMessage = useIntl().formatMessage;
   const [form] = Form.useForm();
-  const [errorMessage, setMessage] = useState("")
+  const [errorMessage, setMessage] = useState<undefined | string>(undefined)
   const [registing, setRegisting] = useState(false)
+  const [roles, setRoles] = useState<any>([]);
+
+  useEffect(() => {
+    getAllRoles().then(rls => {
+      setRoles(rls || [{name: "User", priority: 10, id: 3}])
+    })
+  }, roles)
 
   const onFinish = (user: any) => {
     setRegisting(true)
-    setMessage("")
+    setMessage(undefined)
     delete user.confirm;
     registerUser(user)
       .then((res) => {
-        if (res.ok) {
+        if (res.code != 0) {
           message.success(`user ${user.name} was successfully created`);
         } else {
-          setMessage(res.message)
+          setMessage(formatMessage({id: res.msg}))
         }
         setRegisting(false)
       })
@@ -188,18 +198,19 @@ const RegistrationForm = () => {
             rules={[{ required: true, message: 'Please select your role' }]}
           >
             <Select placeholder="Please select Role">
-              <Option value="admin">Admin</Option>
-              <Option value="manager">Manager</Option>
-              <Option value="user">User</Option>
+              {roles.map((role: any) => {
+                return <Option value={role.id}>{role.name}</Option>
+              })}
             </Select>
           </Form.Item>
         </Col>
       </Row>
       <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit" loading={registing}>
+        <Col span={12}>
+        <Button type="primary" htmlType="submit" loading={registing} className={styles.registerBtn}>
           Register
         </Button>
-        {!registing && errorMessage !== "" && (
+        {!registing && errorMessage && (
           <Alert
             style={{
               marginTop: 5
@@ -209,6 +220,7 @@ const RegistrationForm = () => {
             showIcon
           />
         )}
+        </Col>
       </Form.Item>
     </Form>
   );

@@ -23,27 +23,8 @@ export async function registerUser(newUser: any) {
   return request.post(CREATE_USER, {data : newUser});
 }
 
-export async function currentUser(): Promise<firebase.User>{
-  return request.get('/users/me')
-}
-
 export async function getProfile(userId: string){
   return firebase.database().ref('/profiles/' + userId).once('value')
-}
-
-export async function getCurrentRole() {
-  let user = await currentUser();
-  let role = Role.guest;
-  if (user != null) {
-    let idTokenResult = await user.getIdTokenResult()
-    if (!!idTokenResult.claims.admin) {
-      role = Role.admin;
-    } else {
-      role = Role.user;
-    }
-  }
-
-  return role;
 }
 
 export async function signInUser(user: any) {
