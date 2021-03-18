@@ -1,10 +1,11 @@
+import { GET_SETTING, SET_LOCATION } from "@/api/UserApi";
 import { LocationCheckIn } from "@/data/database";
-import { firebase } from "@/utils/firebase";
+import request from "@/utils/request";
 
-export async function getLocations(parent: number | undefined) {
-    return (await firebase.database().ref().child(`settings/location/${parent}`).once("value")).val()
+export async function getSetting(): Promise<any> {
+    return request.get(GET_SETTING)
 }
 
-export async function addLocation(parent: number, locations: Array<LocationCheckIn>) {
-    return await firebase.database().ref().child(`settings/location/${parent}`).set(locations)
+export async function addLocation(locations: Array<LocationCheckIn>) {
+    return request.put(SET_LOCATION, {data: locations})
 }

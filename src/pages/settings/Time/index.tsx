@@ -10,6 +10,7 @@ import styles from './style.less';
 import LocationSetting from './components/location';
 import { ConnectState } from '@/models/connect';
 import { User } from '@/data/database';
+import { getSetting } from './service';
 
 const { Item } = Menu;
 
@@ -25,6 +26,7 @@ interface TimeState {
     [key: string]: React.ReactNode;
   };
   selectKey: TimeStateKeys;
+  setting: any;
 }
 
 class Time extends Component<
@@ -37,27 +39,17 @@ class Time extends Component<
     super(props);
     const menuMap = {
       location: <FormattedMessage id="settings.menuMap.location" defaultMessage="Location Settings" />,
-      // security: (
-      //   <FormattedMessage id="settingsandtime.menuMap.security" defaultMessage="Security Settings" />
-      // ),
-      // binding: (
-      //   <FormattedMessage id="settingsandtime.menuMap.binding" defaultMessage="Account Binding" />
-      // ),
-      // notification: (
-      //   <FormattedMessage
-      //     id="settingsandtime.menuMap.notification"
-      //     defaultMessage="New Message Notification"
-      //   />
-      // ),
     };
     this.state = {
       mode: 'inline',
       menuMap,
       selectKey: 'location',
+      setting: undefined
     };
   }
 
   componentDidMount() {
+    getSetting().then(setting => this.setState({setting : setting}));
     window.addEventListener('resize', this.resize);
     this.resize();
   }
@@ -105,10 +97,10 @@ class Time extends Component<
   };
 
   renderChildren = () => {
-    const { selectKey } = this.state;
+    const { selectKey, setting } = this.state;
     switch (selectKey) {
       case 'location':
-        return <LocationSetting />
+        return <LocationSetting locations={setting.location || [{}]} />
       case 'security':
         return <SecurityView />;
       case 'binding':
@@ -124,7 +116,7 @@ class Time extends Component<
 
   render() {
     const { currentUser } = this.props;
-    if (!currentUser.uid) {
+    if (!currentUser.id || !this.state.setting) {
       return '';
     }
     const { mode, selectKey } = this.state;

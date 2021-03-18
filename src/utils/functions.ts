@@ -1,4 +1,3 @@
-import { currentUser } from "@/services/login";
 import { formatMessage } from "umi";
 import { getAuthority } from "./authority";
 
@@ -10,7 +9,7 @@ async function parseBody(response: Response) {
     const status = response.status;
     const body = await response.json()
     if (ok) {
-        return {body: body, ok: ok, status: status} 
+        return {body: body, ok: ok, status: status}
     } else
         return {message: formatMessage({id: body.code || "none", defaultMessage: defaultError}), ok: ok, status: status}
 }
@@ -21,8 +20,7 @@ export async function get(methodName: string): Promise<any> {
 }
 
 export async function post(methodName: string, requestBody: any): Promise<any> {
-    const current = await currentUser();
-    const response = await fetch(localURL + methodName, {method: 'POST', 
-        body: JSON.stringify({...requestBody, executor: {id: current.uid, role: getAuthority()} })})
+    const response = await fetch(localURL + methodName, {method: 'POST',
+        body: JSON.stringify({...requestBody, executor: {id: 1, role: getAuthority()} })})
     return parseBody(response)
 }
