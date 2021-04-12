@@ -1,8 +1,6 @@
 // https://umijs.org/config/
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
-import devConfig from './dev';
-import prodConfig from './prod';
 import proxy from './proxy';
 const { REACT_APP_ENV } = process.env;
 
@@ -153,5 +151,4 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
-  devServer: (ENV === 'dev' ? devConfig : prodConfig),
 });

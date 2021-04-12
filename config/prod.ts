@@ -1,6 +1,6 @@
 const prodConfig = {
   port: 3000,
-  host: "localhost"
+  host: "https://hrsol-api.herokuapp.com"
 }
 
 export default prodConfig

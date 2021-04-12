@@ -4,6 +4,7 @@
  */
 import { extend, RequestOptionsInit } from 'umi-request';
 import { notification } from 'antd';
+import { server } from '../../config/server';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -59,7 +60,7 @@ const AntRequest = extend({
   errorHandler, // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
   requestType: 'json',
-  prefix: 'https://hrsol.herokuapp.com/api',
+  prefix: `${server.host}/api`,
   headers: { 'Content-Type': 'application/json'}
 });
 
