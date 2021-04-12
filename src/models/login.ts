@@ -1,5 +1,5 @@
 import { stringify } from 'querystring';
-import { history, Reducer, Effect } from 'umi';
+import { history, Reducer, Effect, formatMessage } from 'umi';
 
 import { signInUser, signOutUser } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
@@ -35,10 +35,10 @@ const Model: LoginModelType = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield signInUser(payload);
-      if (response) {
-        let user = response.user
+      if (response.code == 1) {
+        let user = response.data.user
         let role = user.role.name.toLowerCase();
-        localStorage.setItem('token', response.token);
+        localStorage.setItem('token', response.data.token);
         yield put({
           type: 'changeLoginStatus',
           payload: {
@@ -74,7 +74,7 @@ const Model: LoginModelType = {
           payload: {
             status: "error",
             type: "account",
-            errorMessage: response.message
+            errorMessage: formatMessage({id: response.msg})
           },
         });
       }

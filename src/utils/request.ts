@@ -59,7 +59,7 @@ const AntRequest = extend({
   errorHandler, // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
   requestType: 'json',
-  prefix: 'http://localhost:9000/api',
+  prefix: 'https://hrsol.herokuapp.com/api',
   headers: { 'Content-Type': 'application/json'}
 });
 
