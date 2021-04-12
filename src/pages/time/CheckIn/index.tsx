@@ -40,7 +40,7 @@ export default () => {
         onClose={() => setOpenQR(false)}
         visible={openQR}
       >
-          <QRScane />
+          <QRScane openQR={openQR}/>
       </Drawer>
     </div>
   );

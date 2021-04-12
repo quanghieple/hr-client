@@ -2,7 +2,8 @@ import { PageContainer } from '@ant-design/pro-layout';
 import React, { useState, useEffect } from 'react';
 import { Spin } from 'antd';
 import styles from './index.less';
-import * as functions from '@/utils/functions';
+import request from '@/utils/request';
+import { GET_QR } from '@/api/CheckinApi';
 
 var QRCode = require('qrcode.react');
 
@@ -10,8 +11,8 @@ export default () => {
   const [value, setvalue] = useState<string>("");
   useEffect(() => {
     const getQR = async () => {
-      let qr = await functions.get("getQRCheckIn")
-      setvalue(qr.body.value)
+      let qr = await request.get(GET_QR)
+      setvalue(qr)
     }
 
     getQR()

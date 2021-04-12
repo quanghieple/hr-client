@@ -3,7 +3,7 @@ import { Badge, Calendar, Tooltip } from "antd";
 import { connect, formatMessage } from "umi";
 import { ConnectState } from "@/models/connect";
 import { User } from "@/data/database";
-import { currentDiff, timeDiff } from "@/utils/date";
+import { currentDiff, timeDiffS } from "@/utils/date";
 import { getMonth } from "@/services/checkin";
 
 interface WorkSheetProps {
@@ -23,12 +23,12 @@ class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
         super(props)
         this.state = {
             current: props.currentMonth,
-            shifts: {"morning": "success", "evening": "warning", "night": "error"},
+            shifts: {"s1": "success", "s2": "warning", "s3": "error"},
             month: new Date().getMonth()
         }
     }
 
-    getTimeCheck(time: number) {
+    getTimeCheck(time: string) {
         let date = new Date(time)
         return `${date.getHours()}h:${date.getMinutes()}m`
     }
@@ -36,19 +36,19 @@ class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
     dateCellRender = (value: any) => {
         const { current, shifts, month } = this.state
         if (month != value.month()) return null;
-        let data = current[value.date().toString()]
+        let data = current["d" + value.date()]
         if (data) {
             return (
                 <ul className="events" style={{paddingLeft: '5px'}}>
                     {Object.keys(data).map(item => (
                         <li key={item}>
                             {data[item].out ? (
-                                <Tooltip title={`${formatMessage({id: 'checkin.shift'})} ${item} (${timeDiff(data[item].in, data[item].out)})`}>
-                                    <Badge status={shifts[item] || 'success'} text={`${this.getTimeCheck(data[item].in)} - ${this.getTimeCheck(data[item].out)}`} />
+                                <Tooltip title={`${formatMessage({id: 'checkin.shift'})} ${item} (${timeDiffS(data[item].inn, data[item].out)})`}>
+                                    <Badge status={shifts["s" + data[item].shift.id] || 'success'} text={`${this.getTimeCheck(data[item].inn)} - ${this.getTimeCheck(data[item].out)}`} />
                                 </Tooltip>
                             ) : (
-                                <Tooltip title={`${formatMessage({id: 'checkin.shift'})} ${item} (${currentDiff(data[item].in)})`}>
-                                    <Badge status={shifts[item] || 'success'} text={`${this.getTimeCheck(data[item].in)} - current`} />
+                                <Tooltip title={`${formatMessage({id: 'checkin.shift'})} ${item} (${currentDiff(data[item].inn)})`}>
+                                    <Badge status={shifts["s" + data[item].shift.id] || 'success'} text={`${this.getTimeCheck(data[item].inn)} - current`} />
                                 </Tooltip>
                             )}
                         </li>

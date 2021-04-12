@@ -17,6 +17,7 @@ interface LocationState {
 
 interface LocationProps {
     currentUser: User;
+    openQR: boolean;
 }
 
 class QRScane extends React.Component<LocationProps, LocationState> {
@@ -46,8 +47,8 @@ class QRScane extends React.Component<LocationProps, LocationState> {
         this.setState({ errorMessage: formatMessage({id: 'checkin.qr.init-fail'}), alertType: "error"})
     }
 
-    handleSubmit = (shift: any, note: any) => {
-        return QRcheck({checkTime: this.state.checkTime, shift: shift, note: note, ciphertext: this.state.qrResult})
+    handleSubmit = (shift: any, note: any, id: number | undefined) => {
+        return QRcheck({id: id, time: this.state.checkTime, shift: shift, note: note, data: {ciphertext: this.state.qrResult}})
     }
 
     resetForm = () => {
@@ -58,6 +59,8 @@ class QRScane extends React.Component<LocationProps, LocationState> {
     }
 
     render() {
+      if (!this.props.openQR) return ""
+
         return (
             <div>
                 {this.state.qrResult == "" && (

@@ -14,7 +14,7 @@ export interface CheckinModelType {
     reducers: {
         saveHistory: Reducer<CheckinModelState>
     }
-} 
+}
 
 const CheckinModel: CheckinModelType = {
     namespace: 'checkin',
@@ -23,10 +23,18 @@ const CheckinModel: CheckinModelType = {
     },
     effects: {
         *fetchHistory(_, {call, put}) {
-            let snap = yield call(getCurrentMonth)
+            let res = yield call(getCurrentMonth)
+            var history = {}
+            res.forEach((item: any) => {
+              const key: string = "d" + item.date
+              if (history[key])
+                history[key] = [...history[key], item]
+              else
+                history[key] = [item]
+            })
             yield put({
                 type: 'saveHistory',
-                payload: snap.val()
+                payload: history
             })
         }
     },

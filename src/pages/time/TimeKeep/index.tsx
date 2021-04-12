@@ -4,6 +4,9 @@ import { Tabs } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import CheckIn from '../CheckIn';
 import WorkSheet from '../WorkSheet';
+import { Dispatch } from '@/.umi/plugin-dva/connect';
+import { ConnectState } from '@/models/connect';
+import { connect } from '@/.umi/plugin-dva/exports';
 interface TimeKeepProps {
   match: {
     url: string;
@@ -12,9 +15,20 @@ interface TimeKeepProps {
   location: {
     pathname: string;
   };
+  dispatch: Dispatch;
 }
 
 class TimeKeep extends Component<TimeKeepProps> {
+  componentDidMount() {
+    const { dispatch } = this.props;
+
+    if (dispatch) {
+      dispatch({
+        type: 'checkin/fetchHistory'
+      });
+    }
+  }
+
   handleTabChange = (key: string) => {
 
   };
@@ -36,4 +50,6 @@ class TimeKeep extends Component<TimeKeepProps> {
   }
 }
 
-export default TimeKeep;
+export default connect(({ user }: ConnectState) => ({
+  currentUser: user.currentUser
+}))(TimeKeep);

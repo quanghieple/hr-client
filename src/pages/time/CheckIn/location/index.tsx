@@ -2,12 +2,11 @@ import React from 'react';
 import GoogleMapReact, { Coords } from 'google-map-react';
 import { PushpinOutlined } from '@ant-design/icons';
 import FormCheck from '../form';
-import { getLocations } from '@/pages/settings/Time/service';
 import { connect, formatMessage } from 'umi';
 import { ConnectState } from '@/models/connect';
 import { User, LocationCheckIn } from '@/data/database';
 import { getDistance } from '@/utils/maps';
-import { localtionCheck } from '@/services/checkin';
+import { getParentSetting, localtionCheck } from '@/services/checkin';
 
 interface LocationState {
     center: Coords;
@@ -45,12 +44,12 @@ class LocationCheck extends React.Component<LocationProps, LocationState> {
               };
               this.setState({center: pos})
 
-              getLocations(this.props.currentUser.parent).then((locations:  Array<LocationCheckIn>) => {
-                let isOk = locations.some(loc => getDistance(loc.coord, pos) <= loc.radius)
+              getParentSetting().then(setting => {
+                let isOk = setting.location.some((loc:any) => getDistance(loc.coord, pos) <= loc.radius)
                 if (!isOk) {
                     this.setState({errorMessage: formatMessage({id: 'checkin.location.out-range'}), alertType: "error"})
                 }
-                this.setState({ locations: locations})
+                this.setState({ locations: setting.location})
             })
           })
         } else {
@@ -70,8 +69,8 @@ class LocationCheck extends React.Component<LocationProps, LocationState> {
         })
     };
 
-    handleSubmit = (shift: any, note: any) => {
-        return localtionCheck({...this.state.center, shift: shift, note: note, checkTime: new Date().getTime()})
+    handleSubmit = (shift: any, note: any, id: number | undefined) => {
+        return localtionCheck({id: id, data: this.state.center, shift: shift, note: note, time: new Date().getTime()})
     }
 
     resetForm = () => {
