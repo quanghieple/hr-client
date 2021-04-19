@@ -1,5 +1,4 @@
 import request from '@/utils/request';
-import { firebase } from '@/utils/firebase';
 import { CREATE_USER } from '@/api/UserApi';
 
 export interface LoginParamsType {
@@ -23,32 +22,10 @@ export async function registerUser(newUser: any) {
   return request.post(CREATE_USER, {data : newUser});
 }
 
-export async function getProfile(userId: string){
-  return firebase.database().ref('/profiles/' + userId).once('value')
-}
-
 export async function signInUser(user: any) {
   return request.post('/login', {data: {username: user.userName, password: user.password}})
 }
 
 export async function signOutUser() {
   return true;
-}
-
-export async function checkLoginState() {
-  // eslint-disable-next-line compat/compat
-  return new Promise<any>((resolve , reject ) => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        resolve({
-          ...user,
-          login: true,
-        });
-      } else {
-        resolve({
-          login: false,
-        });
-      }
-    });
-  });
 }

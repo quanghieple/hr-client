@@ -6,7 +6,6 @@ import React, { Component, useState } from 'react';
 import { getAuthority } from '@/utils/authority';
 import styles from './BaseView.less';
 import { updateCurrentUser, updateUser } from '../service';
-import { getDownloadUrl, uploadProfileImage } from '@/services/firebase';
 import { User } from '@/data/database';
 import { ConnectState } from '@/models/connect';
 import moment from 'moment';
@@ -18,19 +17,19 @@ const AvatarView = ({ avatar, email, onChange }: { avatar: string, email: string
   const [loading, setUploading] = useState(false)
 
   const onPreview = async (file: File) => {
-    setUploading(true)
-    onChange("loading")
-    const upload = await uploadProfileImage(file, email)
-    if(upload.state === "success") {
-      const downUrl = await getDownloadUrl(upload.metadata.fullPath)
-      onChange(downUrl);
-      setUrl(downUrl)
-      setUploading(false)
-    } else {
-      message.error(formatMessage({id: "profile.basic.avatar.upload.fail"}))
-      onChange(null);
-      setUploading(false)
-    }
+    // setUploading(true)
+    // onChange("loading")
+    // const upload = await uploadProfileImage(file, email)
+    // if(upload.state === "success") {
+    //   const downUrl = await getDownloadUrl(upload.metadata.fullPath)
+    //   onChange(downUrl);
+    //   setUrl(downUrl)
+    //   setUploading(false)
+    // } else {
+    //   message.error(formatMessage({id: "profile.basic.avatar.upload.fail"}))
+    //   onChange(null);
+    //   setUploading(false)
+    // }
   };
 
   return (<>
