@@ -5,6 +5,7 @@
 import { extend, RequestOptionsInit } from 'umi-request';
 import { notification } from 'antd';
 import { server } from '../../config/server';
+import { history } from 'umi';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -32,7 +33,7 @@ const errorHandler = (error: { response: Response }): Response => {
   if (response && response.status) {
     if (response.status === 401 || response.status === 403) {
       if (window.location.pathname !== '/user/login') {
-        window.location.href = "/user/login?redirect=" + window.location.href;
+        history.push(`/user/login`);
       }
       return response;
     }
