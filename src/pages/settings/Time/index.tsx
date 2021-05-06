@@ -39,6 +39,7 @@ class Time extends Component<
     super(props);
     const menuMap = {
       location: <FormattedMessage id="settings.menuMap.location" defaultMessage="Location Settings" />,
+      notification: <FormattedMessage id="settings.menuMap.shift" defaultMessage="Shift Settings" />,
     };
     this.state = {
       mode: 'inline',
@@ -106,7 +107,7 @@ class Time extends Component<
       case 'binding':
         return <BindingView />;
       case 'notification':
-        return <NotificationView />;
+        return <NotificationView shift={setting.shift} />;
       default:
         break;
     }
@@ -116,7 +117,7 @@ class Time extends Component<
 
   render() {
     const { currentUser } = this.props;
-    if (!currentUser.id || !this.state.setting) {
+    if (!currentUser?.id || !this.state.setting) {
       return '';
     }
     const { mode, selectKey } = this.state;

@@ -145,6 +145,9 @@ class LocationSetting extends Component<LocationProps, LocationState> {
                     title="Select Radius"
                     visible={this.state.openSetRadius}
                     footer={[
+                      <Button type="default" onClick={() => this.setState({openSetRadius:false})}>
+                          Cancel
+                        </Button>,
                         <Button key="submit" type="primary" loading={this.state.submitting} onClick={this.submitHandler}>
                           Save
                         </Button>,
