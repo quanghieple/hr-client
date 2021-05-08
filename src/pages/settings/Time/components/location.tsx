@@ -2,7 +2,7 @@ import { ConnectState } from '@/models/connect';
 import GoogleMapReact, { Coords } from 'google-map-react';
 import React, { Component } from "react";
 import { addLocation } from '../service';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 import { User, LocationCheckIn } from '@/data/database';
 import { Button, Card, Input, Modal, Slider, Spin } from 'antd';
 import { DeleteOutlined, PushpinOutlined } from '@ant-design/icons';
@@ -146,10 +146,10 @@ class LocationSetting extends Component<LocationProps, LocationState> {
                     visible={this.state.openSetRadius}
                     footer={[
                       <Button type="default" onClick={() => this.setState({openSetRadius:false})}>
-                          Cancel
+                          {formatMessage({ id: 'button.cancel' })}
                         </Button>,
                         <Button key="submit" type="primary" loading={this.state.submitting} onClick={this.submitHandler}>
-                          Save
+                          {formatMessage({ id: 'button.save' })}
                         </Button>,
                       ]}
                 >

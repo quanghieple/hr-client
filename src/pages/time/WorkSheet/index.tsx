@@ -67,7 +67,7 @@ class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
         if (value.year() == time.getFullYear() && value.month() == time.getMonth()) {
             this.setState({current: this.props.currentMonth, month: time.getMonth()})
         } else {
-            getMonth(value.year(), value.month()).then((snap) => {
+            getMonth(value.month(), value.year()).then((snap) => {
               var history = {}
               snap.forEach((item: any) => {
                 const key: string = "d" + item.date

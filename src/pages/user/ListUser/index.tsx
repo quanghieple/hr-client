@@ -6,7 +6,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import { queryRule} from './service';
 import { User } from '@/data/database';
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { Link } from 'umi';
+import { formatMessage, Link } from 'umi';
 
 const TableList: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
@@ -91,7 +91,7 @@ const TableList: React.FC<{}> = () => {
             Disabled
           </a>
           <Divider type="vertical" />
-          <Link to={`/other/profile?id=${record.id}`}>Edit</Link>
+          <Link to={`/other/profile?id=${record.id}`}>{formatMessage({ id: 'button.edit' })}</Link>
         </>
       ),
     },

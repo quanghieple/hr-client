@@ -11,10 +11,10 @@ export default () => {
   return (
     <div>
     <Row gutter={50} className={styles.checkIn}>
-      <Col xs={24} sm={24} md={8} lg={8}>
+      {/* <Col xs={24} sm={24} md={8} lg={8}>
         <img className={styles.imageCheckIn} src="https://sharingwork.com/static/img/introduction/Post.png" />
         <p className={styles.textCheckIn}><FormattedMessage id='checkin.wifi.title' /></p>
-      </Col>
+      </Col> */}
       <Col xs={24} sm={24} md={8} lg={8}>
         <img onClick={() => setOpenL(true)} className={styles.imageCheckIn} src="https://sharingwork.com/static/img/introduction/Browse.png" />
         <p className={styles.textCheckIn}><FormattedMessage id='checkin.location.title' /></p>

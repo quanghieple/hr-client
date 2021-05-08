@@ -1,4 +1,5 @@
 // https://umijs.org/config/
+import { locale } from 'moment';
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';

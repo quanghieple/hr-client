@@ -18,5 +18,10 @@ export default {
     'checkin.qr.init-fail': 'Failed to init QR reader, Please contact technical support',
     'checkin.code.3002': 'Your QR code was expried',
     'checkin.shift.updated.success': 'Your shift was updated successully',
-    'checkin.shift.created.success': 'Your shift was created successully'
+    'checkin.shift.created.success': 'Your shift was created successully',
+    'checkin.shift.current-list': 'Current Shift',
+    'checkin.shift.new-shift': 'New Shift',
+    'checkin.shift.name': 'Shift Name',
+    'checkin.shift.name.required': 'Please input shift name!',
+    'checkin.shift.range': 'Time'
 }

@@ -79,12 +79,12 @@ class NotificationView extends Component<ShiftProps, ShiftState> {
     const data = this.state.shifts
     const action = (data: any) => (
       <Button onClick={() => this.handleUpdateClick(data)}>
-        Update
+        {formatMessage({ id: 'button.update' })}
       </Button>
     )
     return (
       <Fragment>
-        <h3 style={{marginTop: "30px"}}>Current Shift</h3>
+        <h3 style={{marginTop: "30px"}}>{formatMessage({ id: 'checkin.shift.current-list' })}</h3>
         <List<Unpacked<typeof data>>
           itemLayout="horizontal"
           dataSource={data}
@@ -94,14 +94,14 @@ class NotificationView extends Component<ShiftProps, ShiftState> {
             </List.Item>
           )}
         />
-        <h3 style={{marginTop: "30px"}}>New Shift</h3>
+        <h3 style={{marginTop: "30px"}}>{formatMessage({ id: 'checkin.shift.shift-new' })}</h3>
         <Form onFinish={this.handleSubmit} ref={this.formRef} >
           <Row>
             <Col span={12}>
             <Form.Item
               name="name"
-              label="Shift Name"
-              rules={[{ required: true, message: "Please input shift name!" }]}
+              label={formatMessage({ id: 'checkin.shift.name' })}
+              rules={[{ required: true, message: formatMessage({ id: 'checkin.shift.name.required' }) }]}
             >
               <Input style={{ width: "100%" }} />
             </Form.Item>
@@ -109,7 +109,7 @@ class NotificationView extends Component<ShiftProps, ShiftState> {
             <Col span={12}>
             <Form.Item
               name="range"
-              label="Time"
+              label={formatMessage({ id: 'checkin.shift.range' })}
             >
               <TimePicker.RangePicker format="HH:mm"/>
             </Form.Item>
@@ -118,12 +118,12 @@ class NotificationView extends Component<ShiftProps, ShiftState> {
           <Row>
            <Col span={36}>
               <Button loading={this.state.updating} type="primary" htmlType="submit" >
-                {this.state.current.id ? "Update" : "Create"}
+                {this.state.current.id ? formatMessage({ id: 'button.update' }) : formatMessage({ id: 'button.create' })}
               </Button>
             </Col>
             {this.state.current.id && (
               <Button loading={this.state.updating} style={{marginLeft: "10px"}} type="default" onClick={this.handleCancelClick} >
-                Cancel
+                {formatMessage({ id: 'button.cancel' })}
               </Button>
             )}
           </Row>
