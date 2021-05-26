@@ -30,7 +30,7 @@ class LocationCheck extends React.Component<LocationProps, LocationState> {
             center: {lat: -1, lng: 0},
             zoom: 15,
             locations: [],
-            errorMessage: "",
+            errorMessage: formatMessage({id: 'checkin.location.maps.wait'}),
             alertType: "info"
         }
     }
@@ -67,6 +67,7 @@ class LocationCheck extends React.Component<LocationProps, LocationState> {
                 center: mark.coord,
                 radius: mark.radius})
         })
+        this.setState({errorMessage: ""})
     };
 
     handleSubmit = (shift: any, note: any, id: number | undefined) => {

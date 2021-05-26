@@ -94,7 +94,7 @@ class NotificationView extends Component<ShiftProps, ShiftState> {
             </List.Item>
           )}
         />
-        <h3 style={{marginTop: "30px"}}>{formatMessage({ id: 'checkin.shift.shift-new' })}</h3>
+        <h3 style={{marginTop: "30px"}}>{formatMessage({ id: 'checkin.shift.new-shift' })}</h3>
         <Form onFinish={this.handleSubmit} ref={this.formRef} >
           <Row>
             <Col span={12}>

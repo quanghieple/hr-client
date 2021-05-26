@@ -11,6 +11,7 @@ export default {
     'checkin.today-history': 'Today History',
     'checkin.location.out-range': 'You are not in the check in area',
     'checkin.location.title': 'Location Check In',
+    'checkin.location.maps.wait': 'Loading map – please wait…',
     'checkin.qr.title': 'QR Code Check In',
     'checkin.wifi.title': 'Wifi Check In',
     'checkin.qr.scan-first': 'Please scan QR code first',
@@ -23,5 +24,10 @@ export default {
     'checkin.shift.new-shift': 'New Shift',
     'checkin.shift.name': 'Shift Name',
     'checkin.shift.name.required': 'Please input shift name!',
-    'checkin.shift.range': 'Time'
+    'checkin.shift.range': 'Time',
+    'checkin.work-shift.updated.note-int': 'Check in note',
+    'checkin.work-shift.updated.note-out': 'Check out note',
+    'checkin.work-shift.updated.note-request': 'Request description',
+    'checkin.work-shift.updated.button': 'Request Update',
+    'checkin.work-shift.updated.wating': 'Your update was reuqested, please wait your manager approve'
 }

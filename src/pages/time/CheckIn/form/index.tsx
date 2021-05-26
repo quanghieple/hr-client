@@ -108,7 +108,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
 
     handleSubmit = (check: any) => {
         this.setState({ submitting: true });
-        console.log(check);
+        console.log(this.state, check);
 
         const shiftName = this.state.shifts[check.shift].name;
         this.props.handleSubmit(check.shift, check.note, this.state.id).then((res: any) => {

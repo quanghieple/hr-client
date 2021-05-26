@@ -1,4 +1,4 @@
-import { GET_CURRENT_SHIFT, GET_HISTORY, GET_SHIFT_LIST, LOCATION_CHECK, QR_CHECK, UPDATE_SHIFT } from '@/api/CheckinApi';
+import { GET_CURRENT_SHIFT, GET_HISTORY, GET_SHIFT_LIST, LOCATION_CHECK, QR_CHECK, UPDATE_SHIFT, UPDATE_WORK_SHIFT } from '@/api/CheckinApi';
 import { GET_PARENT_SETTING, GET_SETTING } from '@/api/UserApi';
 import request from '@/utils/request';
 
@@ -40,4 +40,8 @@ export async function getMonth(month: number, year: number) {
 
 export function updateShift(body: any): Promise<any> {
   return request.post(UPDATE_SHIFT, { data: body })
+}
+
+export function updateWorkShift(body: any): Promise<any> {
+  return request.post(UPDATE_WORK_SHIFT, {data: body});
 }
