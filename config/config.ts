@@ -1,5 +1,4 @@
 // https://umijs.org/config/
-import { locale } from 'moment';
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
@@ -61,22 +60,6 @@ export default defineConfig({
               name: 'welcome',
               icon: 'smile',
               component: './Welcome',
-            },
-            {
-              path: '/admin',
-              name: 'admin',
-              icon: 'crown',
-              // component: './Admin',
-              authority: ['admin'],
-              routes: [
-                {
-                  name: 'work-list',
-                  icon: 'clock-circle',
-                  path: '/admin/work-list',
-                  component: './time/WorkList',
-                  authority: ['admin'],
-                },
-              ],
             },
             {
               path: '/users',

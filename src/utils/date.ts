@@ -30,3 +30,13 @@ export function formatTime(time: number) {
     let date = new Date(time)
     return `${date.getHours()}h:${date.getMinutes()}m:${date.getSeconds()}s`
 }
+
+export function formatTimeDate(time: string) {
+  let date = new Date(time)
+  return `${date.getHours()}h:${date.getMinutes()}m`
+}
+
+export function formatDate(time: string) {
+  let date = new Date(time)
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}

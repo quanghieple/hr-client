@@ -16,8 +16,8 @@ interface FormCheckProps {
 }
 
 interface FormCheckState {
-  id: number | undefined;
-    shift: string;
+    id: number | undefined;
+    shift: any;
     shifts: object;
 
     checkedShift: any[];
@@ -73,11 +73,12 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
     componentDidMount() {
         getCurrentShift().then((value) => {
             if(value) {
-                this.setState({checkin: value.inn, shift: value.shift.name, id: value.id})
-                if(this.formRef.current)
+                this.setState({checkin: value.inn, shift: value.shift, id: value.id})
+                if(this.formRef.current) {
                     this.formRef.current.setFieldsValue({
                         shift: value.shift.id
                     });
+                }
             }
         })
 
@@ -110,22 +111,22 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
         this.setState({ submitting: true });
         console.log(this.state, check);
 
-        const shiftName = this.state.shifts[check.shift].name;
+        const shift = this.state.shifts[check.shift];
         this.props.handleSubmit(check.shift, check.note, this.state.id).then((res: any) => {
           this.setState({submitting: false})
           if (res.code == 1) {
               let result = res.data
               if(result.status == 1) {
-                  this.setState({checkin: result.inn, shift: shiftName, id: result.id})
+                  this.setState({checkin: result.inn, shift: shift, id: result.id})
               } else {
-                  this.setState({id: undefined, checkin: "", checkedShift: [...this.state.checkedShift, {...result, shift: {id: check.shift, name: shiftName}}]})
+                  this.setState({id: undefined, checkin: "", checkedShift: [...this.state.checkedShift, {...result, shift: {id: check.shift, name: shift.name}}]})
                   if(this.formRef.current) {
                       this.formRef.current.setFieldsValue({
                           shift: ""
                       });
                   }
               }
-              message.info(`${formatMessage({id: 'checkin.success'})}. shift ${shiftName}`)
+              message.info(`${formatMessage({id: 'checkin.success'})}. shift ${shift.name}`)
               this.resetForm()
           } else {
             this.openNotification(formatMessage({id: 'checkin.fail'}), formatMessage({id: res.msg}))
@@ -146,7 +147,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                 )}
                 {checkin != "" && (
                     <div style={{marginBottom: '15px'}}>
-                        <TimeWork checkin={checkin} shift={shift} />
+                        <TimeWork checkin={checkin} shift={shift.name} />
                     </div>
                 )}
                 {errorMessage === "" ? (
@@ -155,7 +156,7 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                     name="basic"
                     onFinish={this.handleSubmit}
                     ref={this.formRef}
-                    initialValues={{shift: shift}}
+                    initialValues={{shift: shift.id}}
                 >
                     <Form.Item
                         label={formatMessage({id: 'checkin.form.shift'})}

@@ -30,3 +30,11 @@ export interface LocationCheckIn {
   name: string;
   coord: Coord;
 }
+
+export interface RequestUpdate {
+  public id: number;
+  public note: string;
+  public status: number;
+  public updateFrom: string;
+  public updateTo: string;
+}

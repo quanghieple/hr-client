@@ -28,6 +28,6 @@ export default {
     'checkin.work-shift.updated.note-int': 'Check in note',
     'checkin.work-shift.updated.note-out': 'Check out note',
     'checkin.work-shift.updated.note-request': 'Request description',
-    'checkin.work-shift.updated.button': 'Request Update',
+    'checkin.work-shift.updated.button': 'Update Request',
     'checkin.work-shift.updated.wating': 'Your update was reuqested, please wait your manager approve'
 }

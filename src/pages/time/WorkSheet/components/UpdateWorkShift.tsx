@@ -5,16 +5,32 @@ import ProDescriptions from "@ant-design/pro-descriptions";
 import moment from "moment";
 import { range } from "lodash";
 import { CheckinStatus, RequestUpdateStatus } from '..';
-import { updateWorkShift } from '@/services/checkin';
+import { getUpdateWorkShift, updateWorkShift } from '@/services/checkin';
 const { Panel } = Collapse;
 
 interface UpdateWorkShiftProps {
     item: any;
+    updateItem?: any;
     onRefresh: () => void;
 }
 
 const UpdateWorkShift: React.FC<UpdateWorkShiftProps> = (props) => {
-    const { item, onRefresh } = props;
+    const { item, updateItem, onRefresh } = props;
+    const [loading, setLoading] = React.useState(false);
+    const [current, setCurrent] = React.useState<any>({ note: null, updateTo: null });
+    const formValue = {...item, requestNote: current.note }
+
+    React.useEffect(() => {
+      if (!updateItem) {
+        getUpdateWorkShift(item.id).then((res) => {
+            if (res.code) {
+                setCurrent(res.data)
+            }
+        })
+      } else {
+        setCurrent(updateItem)
+      }
+    }, [item]);
 
     const generateStatus = (status: number): string => {
         if (status == CheckinStatus.Checkin) {
@@ -27,14 +43,24 @@ const UpdateWorkShift: React.FC<UpdateWorkShiftProps> = (props) => {
     }
 
     const handleSubmitUpdate = (value: any) => {
-        updateWorkShift({...value, id: item.id}).then((res) => {
+        setLoading(true);
+        const body = {...value, checkId: item.id};
+        if (current) body.id = current?.id;
+        updateWorkShift(body).then((res) => {
             if (res.code) {
-                if(res.data === RequestUpdateStatus.Approve) {
-                    message.success("Update successfully");
+                if(current.id) {
+                    message.success("Update Request successfully");
+                } else if(res.data.code === RequestUpdateStatus.Approve) {
+                    message.success("Update Workshift successfully");
                     onRefresh();
-                } else message.info(formatMessage({id: 'checkin.work-shift.updated.wating'}))
-            } else if (res.msg)
+                } else {
+                    message.info(formatMessage({id: 'checkin.work-shift.updated.wating'}));
+                    setCurrent(res.data.update || { note: null, updateTo: null });
+                }
+            } else if (res.msg) {
                 message.error(formatMessage({id: res.msg}))
+            }
+            setLoading(false);
         })
     }
 
@@ -66,13 +92,13 @@ const UpdateWorkShift: React.FC<UpdateWorkShiftProps> = (props) => {
 
             </ProDescriptions>
             {item.status !== CheckinStatus.Checkin && (
-                <Collapse >
-                    <Panel header="Update" key="1">
+                <Collapse defaultActiveKey="1" >
+                    <Panel header={current.id ? "Update Your Request" : "Request Update Work Shift"} key={current.id ? "1" : "0"}>
                         <Form
                             layout="vertical"
                             name="basic"
                             onFinish={handleSubmitUpdate}
-                            initialValues={item}
+                            initialValues={formValue}
                         >
                             <Form.Item
                                 name="checkout"
@@ -84,7 +110,7 @@ const UpdateWorkShift: React.FC<UpdateWorkShiftProps> = (props) => {
                                         const inn = moment(item.inn)
                                         return (hour === inn.hours()) ? range(0, inn.minutes()) : []
                                     }}
-                                    defaultValue={moment(item.out)}
+                                    defaultValue={moment(current.updateTo || item.out)}
                                     format="HH:mm" />
                             </Form.Item>
 
@@ -108,8 +134,8 @@ const UpdateWorkShift: React.FC<UpdateWorkShiftProps> = (props) => {
                                 <Input.TextArea />
                             </Form.Item>
                             <Form.Item>
-                                <Button type="primary" htmlType="submit">
-                                    {formatMessage({ id: 'checkin.work-shift.updated.button' })}
+                                <Button type="primary" htmlType="submit" loading={loading} >
+                                    {formatMessage({ id: current.id ? 'checkin.work-shift.updated.button' : 'button.update' })}
                                 </Button>
                             </Form.Item>
                         </Form>

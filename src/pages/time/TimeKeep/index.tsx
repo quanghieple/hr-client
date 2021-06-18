@@ -7,6 +7,7 @@ import WorkSheet from '../WorkSheet';
 import { Dispatch } from '@/.umi/plugin-dva/connect';
 import { ConnectState } from '@/models/connect';
 import { connect } from '@/.umi/plugin-dva/exports';
+import RequestedList from '../RequestedList';
 interface TimeKeepProps {
   match: {
     url: string;
@@ -43,6 +44,9 @@ class TimeKeep extends Component<TimeKeepProps> {
           </TabPane>
           <TabPane tab="Work Sheet" key="2">
             <WorkSheet />
+          </TabPane>
+          <TabPane tab="Update Requested" key="3">
+            <RequestedList />
           </TabPane>
         </Tabs>
       </PageContainer>
