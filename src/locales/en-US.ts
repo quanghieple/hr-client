@@ -25,6 +25,8 @@ export default {
   'button.update': 'Update',
   'button.edit': 'Edit',
   'button.create': 'Create',
+  'button.approve': 'Approve',
+  'button.reject': 'Reject',
   ...globalHeader,
   ...menu,
   ...settingDrawer,

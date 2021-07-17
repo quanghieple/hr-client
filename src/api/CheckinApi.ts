@@ -7,4 +7,5 @@ export const GET_HISTORY = '/check/history';
 export const UPDATE_SHIFT = '/check/shift/update';
 export const UPDATE_WORK_SHIFT = '/check/work-shift/update';
 export const GET_LIST_REQUEST = '/check/work-shift/requeted';
+export const GET_LIST_APPROVE = '/check/work-shift/approve';
 export const GET_CHECK_IN = '/check/checkin';

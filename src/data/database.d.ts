@@ -37,4 +37,6 @@ export interface RequestUpdate {
   public status: number;
   public updateFrom: string;
   public updateTo: string;
+  public from: User;
+  public checkIn: any;
 }

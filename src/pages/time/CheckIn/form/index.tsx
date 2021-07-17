@@ -13,12 +13,12 @@ interface FormCheckProps {
     resetForm: Function;
     currentUser: User;
     currentCheck: any;
+    shifts: object;
 }
 
 interface FormCheckState {
     id: number | undefined;
     shift: any;
-    shifts: object;
 
     checkedShift: any[];
     checkin: string;
@@ -65,7 +65,6 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
             shift: "",
             checkin: "",
             submitting: false,
-            shifts: {},
             checkedShift: [],
         }
     }
@@ -80,13 +79,6 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
                     });
                 }
             }
-        })
-
-        getListShift().then((value) => {
-          const shifts = value.reduce((map : any, item : any) => {
-            return {...map, [item.id]: item}
-          }, {})
-          this.setState({shifts: shifts})
         })
 
         let key: string = "d" + (new Date().getDate())
@@ -109,9 +101,8 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
 
     handleSubmit = (check: any) => {
         this.setState({ submitting: true });
-        console.log(this.state, check);
 
-        const shift = this.state.shifts[check.shift];
+        const shift = this.props.shifts[check.shift];
         this.props.handleSubmit(check.shift, check.note, this.state.id).then((res: any) => {
           this.setState({submitting: false})
           if (res.code == 1) {
@@ -138,8 +129,8 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
     }
 
     render() {
-        const { alertType, errorMessage } = this.props
-        const { checkin, shift, shifts, checkedShift } = this.state;
+        const { alertType, errorMessage, shifts } = this.props
+        const { checkin, shift, checkedShift } = this.state;
         return (
             <div style={{ paddingTop: "20px" }} >
                 {checkedShift.length > 0 && (
@@ -195,5 +186,6 @@ class FormCheck extends Component<FormCheckProps, FormCheckState> {
 
 export default connect(({ user, checkin }: ConnectState) => ({
     currentUser: user.currentUser,
-    currentCheck: checkin.history
+    currentCheck: checkin.history,
+    shifts: checkin.shifts
 }))(FormCheck)

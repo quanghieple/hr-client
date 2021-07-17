@@ -13,6 +13,8 @@ export default {
   'menu.login': 'Login',
   'menu.register': 'Register',
   'menu.timekeeping': 'Time Keeping',
+  'menu.manage': 'Manage',
+  'menu.manage.approve-list': 'Approve List',
   'menu.register.result': 'Register Result',
   'menu.dashboard': 'Dashboard',
   'menu.dashboard.analysis': 'Analysis',

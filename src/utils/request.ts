@@ -59,7 +59,6 @@ const errorHandler = (error: { response: Response }): Response => {
  */
 const AntRequest = extend({
   errorHandler, // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
   requestType: 'json',
   prefix: `${server.host}/api`,
   headers: { 'Content-Type': 'application/json'}

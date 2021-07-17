@@ -4,7 +4,7 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { RequestUpdate, User } from '@/data/database';
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { formatMessage } from 'umi';
-import { getCheckIn, queryRule } from '@/services/checkin';
+import { getCheckIn, getRequestedList } from '@/services/checkin';
 import { formatDate, formatTimeDate } from '@/utils/date';
 import UpdateWorkShift from '../WorkSheet/components/UpdateWorkShift';
 
@@ -85,7 +85,7 @@ const RequestedList: React.FC<{}> = () => {
             return collapsed ? <PlusCircleOutlined /> : <MinusCircleOutlined />;
           }
         }}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        request={(params, sorter, filter) => getRequestedList({ ...params, sorter, filter })}
         columns={columns}
         pagination={{
           showTotal: (total) => `Total: ${total}`,

@@ -27,6 +27,9 @@ class TimeKeep extends Component<TimeKeepProps> {
       dispatch({
         type: 'checkin/fetchHistory'
       });
+      dispatch({
+        type: 'checkin/fetchShifts'
+      });
     }
   }
 

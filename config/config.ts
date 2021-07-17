@@ -1,10 +1,6 @@
 // https://umijs.org/config/
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
-import proxy from './proxy';
-const { REACT_APP_ENV } = process.env;
-
-const ENV = REACT_APP_ENV || 'dev'
 export default defineConfig({
   hash: true,
   antd: {},
@@ -110,6 +106,19 @@ export default defineConfig({
               authority: ['admin'],
             },
             {
+              name: 'manage',
+              icon: 'solution',
+              path: '/manage',
+              authority: ['admin'],
+              routes: [
+                {
+                  name: 'approve-list',
+                  path: '/manage/approve-list',
+                  component: './manage/ApproveList',
+                }
+              ]
+            },
+            {
               component: './404',
             },
           ],
@@ -131,7 +140,6 @@ export default defineConfig({
   // @ts-ignore
   title: false,
   ignoreMomentLocale: true,
-  proxy: proxy[ENV],
   manifest: {
     basePath: '/',
   },
