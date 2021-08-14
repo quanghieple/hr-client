@@ -67,8 +67,9 @@ const AntRequest = extend({
 class Request {
   getToken = () => localStorage.getItem('token') || ""
 
-  public get = (url: string) => {
-    return AntRequest(url, {headers: {authorization: this.getToken()}})
+  public get = (url: string, queryparams: any = {}) => {
+    const queryString = Object.keys(queryparams).length > 0 ? "?" + Object.keys(queryparams).map(key => `${key}=${queryparams[key]}`).join('&') : '';
+    return AntRequest(url + queryString, { headers: {authorization: this.getToken()}})
   }
 
   public post = (url: string, options?: RequestOptionsInit) => {

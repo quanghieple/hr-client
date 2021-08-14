@@ -7,12 +7,13 @@ import { ConnectState } from './connect.d';
 export interface NoticeItem extends NoticeIconData {
   id: string;
   type: string;
-  status: string;
+  cStatus: string;
 }
 
 export interface GlobalModelState {
   collapsed: boolean;
   notices: NoticeItem[];
+  unread: any;
 }
 
 export interface GlobalModelType {
@@ -26,6 +27,7 @@ export interface GlobalModelType {
   reducers: {
     changeLayoutCollapsed: Reducer<GlobalModelState>;
     saveNotices: Reducer<GlobalModelState>;
+    saveUnread: Reducer<GlobalModelState>;
     saveClearedNotices: Reducer<GlobalModelState>;
   };
   subscriptions: { setup: Subscription };
@@ -37,22 +39,28 @@ const GlobalModel: GlobalModelType = {
   state: {
     collapsed: false,
     notices: [],
+    unread: {}
   },
 
   effects: {
     *fetchNotices(_, { call, put, select }) {
       const data = yield call(queryNotices);
+      const listOfList = Object.values(data).map((d: any) => d.list);
+      const unread = Object.keys(data).reduce((obj, key) => ({...obj, [key]: data[key].unread}), {});
       yield put({
         type: 'saveNotices',
-        payload: data,
+        payload: listOfList.reduce((acc: any[], next: any[]) => acc.concat(next)),
       });
-      const unreadCount: number = yield select(
-        (state: ConnectState) => state.global.notices.filter((item) => !item.read).length,
-      );
+      yield put({
+        type: 'saveUnread',
+        payload: unread,
+      });
+      // const unreadCount: number = sumBy(Object.values(data), "unread")
+      // const totalCount: number = sumBy(listOfList, "length")
       // yield put({
       //   type: 'user/changeNotifyCount',
       //   payload: {
-      //     totalCount: data.length,
+      //     totalCount,
       //     unreadCount,
       //   },
       // });
@@ -62,32 +70,31 @@ const GlobalModel: GlobalModelType = {
         type: 'saveClearedNotices',
         payload,
       });
-      const count: number = yield select((state: ConnectState) => state.global.notices.length);
-      const unreadCount: number = yield select(
-        (state: ConnectState) => state.global.notices.filter((item) => !item.read).length,
-      );
-      // yield put({
-      //   type: 'user/changeNotifyCount',
-      //   payload: {
-      //     totalCount: count,
-      //     unreadCount,
-      //   },
-      // });
+      const unread = yield select((state: ConnectState) => state.global.unread);
+      delete unread[payload];
+      yield put({
+        type: 'saveUnread',
+        payload: { ...unread },
+      });
     },
     *changeNoticeReadState({ payload }, { put, select }) {
       const notices: NoticeItem[] = yield select((state: ConnectState) =>
         state.global.notices.map((item) => {
           const notice = { ...item };
-          if (notice.id === payload) {
-            notice.read = true;
+          if (notice.id === payload.id) {
+            notice.status = 2;
           }
           return notice;
         }),
       );
-
+      const unread = yield select((state: ConnectState) => state.global.unread);
       yield put({
         type: 'saveNotices',
         payload: notices,
+      });
+      yield put({
+        type: 'saveUnread',
+        payload: { ...unread, [payload.type]: unread[payload.type] - 1},
       });
 
       // yield put({
@@ -101,20 +108,26 @@ const GlobalModel: GlobalModelType = {
   },
 
   reducers: {
-    changeLayoutCollapsed(state = { notices: [], collapsed: true }, { payload }): GlobalModelState {
+    changeLayoutCollapsed(state = { notices: [], collapsed: true, unread: {} }, { payload }): GlobalModelState {
       return {
         ...state,
         collapsed: payload,
       };
     },
-    saveNotices(state, { payload }): GlobalModelState {
+    saveNotices(state = { notices: [], collapsed: true, unread: {} }, { payload }): GlobalModelState {
       return {
-        collapsed: false,
         ...state,
+        collapsed: false,
         notices: payload,
       };
     },
-    saveClearedNotices(state = { notices: [], collapsed: true }, { payload }): GlobalModelState {
+    saveUnread(state = { notices: [], collapsed: true, unread: {} }, { payload }): GlobalModelState {
+      return {
+        ...state,
+        unread: payload,
+      }
+    },
+    saveClearedNotices(state = { notices: [], collapsed: true, unread: {} }, { payload }): GlobalModelState {
       return {
         ...state,
         collapsed: false,

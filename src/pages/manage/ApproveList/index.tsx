@@ -1,10 +1,10 @@
-import { Button, Collapse, Drawer, Select } from 'antd';
+import { Button, Collapse, Drawer, message, Select } from 'antd';
 import React, { useState, useRef } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { RequestUpdate } from '@/data/database';
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { formatMessage } from 'umi';
-import { getApproveList } from '@/services/checkin';
+import { getApproveList, approveRequest, rejectRequest } from '@/services/checkin';
 import { formatDate, formatTimeDate } from '@/utils/date';
 import { Option } from 'antd/lib/mentions';
 import _ from '@umijs/deps/compiled/lodash';
@@ -83,6 +83,30 @@ const ApproveList: React.FC<{}> = () => {
     }
   ];
 
+  const approve = (id: number) => {
+    approveRequest(id).then((res) => {
+      if (res.code) {
+        message.success("Aprroved");
+        setOpenDraw(false);
+        actionRef.current?.reload();
+      } else {
+        message.error(formatMessage({id: res.msg || 'error.it.help'}))
+      }
+    });
+  }
+
+  const reject = (id: number) => {
+    rejectRequest(id).then((res) => {
+      if (res.code) {
+        message.success("Rejected");
+        setOpenDraw(false);
+        actionRef.current?.reload();
+      } else {
+        message.error(formatMessage({id: res.msg || 'error.it.help'}))
+      }
+    });
+  }
+
   return (
     <>
       <ProTable<RequestUpdate>
@@ -155,14 +179,18 @@ const ApproveList: React.FC<{}> = () => {
                     {item.note}
                   </ProDescriptions.Item>
                 </ProDescriptions>
-                <Button type="default" htmlType="submit" style={{color: 'white', backgroundColor: 'darkred', marginRight: '10px'}}>
-                  {formatMessage({ id: 'button.reject' })}
-                </Button>
+                {item.status !== 3 && (
+                  <Button type="default" onClick={() => reject(item.id)} htmlType="button" style={{color: 'white', backgroundColor: 'darkred', marginRight: '10px'}}>
+                    {formatMessage({ id: 'button.reject' })}
+                  </Button>
+                )}
 
-                <Button type="primary" htmlType="submit" >
-                  {formatMessage({ id: 'button.approve' })}
-                </Button>
-              </Panel>
+                {item.status !== 2 && (
+                  <Button type="primary" onClick={() => approve(item.id)} htmlType="button" >
+                    {formatMessage({ id: 'button.approve' })}
+                  </Button>
+                )}
+                </Panel>
             </Collapse>
           </>
         )}

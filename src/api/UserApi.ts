@@ -8,3 +8,5 @@ export const GET_LIST_USER = "/users/users/all";
 export const GET_SETTING = "/users/setting/get";
 export const GET_PARENT_SETTING = "/users/parent/setting";
 export const SET_LOCATION = "/users/setting/localtion";
+export const GET_NOTICES_LIST = "/users/notices/list";
+export const CLEAR_NOTICES = "/users/notices/clear";

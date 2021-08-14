@@ -9,6 +9,7 @@ import settings from './en-US/settings';
 import profile from './en-US/profile';
 import checkin from './en-US/checkin';
 import response from './en-US/response';
+import notification from './en-US/notification';
 
 export default {
   'navBar.lang': 'Languages',
@@ -37,5 +38,6 @@ export default {
   ...firebase,
   ...profile,
   ...checkin,
-  ...response
+  ...response,
+  ...notification
 };

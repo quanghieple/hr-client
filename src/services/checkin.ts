@@ -1,4 +1,4 @@
-import { GET_CURRENT_SHIFT, GET_HISTORY, GET_LIST_REQUEST, GET_SHIFT_LIST, LOCATION_CHECK, QR_CHECK, UPDATE_SHIFT, UPDATE_WORK_SHIFT, GET_CHECK_IN, GET_LIST_APPROVE } from '@/api/CheckinApi';
+import { GET_CURRENT_SHIFT, GET_HISTORY, GET_LIST_REQUEST, GET_SHIFT_LIST, LOCATION_CHECK, QR_CHECK, UPDATE_SHIFT, UPDATE_WORK_SHIFT, GET_CHECK_IN, GET_LIST_APPROVE, REQUESTED } from '@/api/CheckinApi';
 import { GET_PARENT_SETTING, GET_SETTING } from '@/api/UserApi';
 import request from '@/utils/request';
 
@@ -43,11 +43,11 @@ export function updateShift(body: any): Promise<any> {
 }
 
 export function updateWorkShift(body: any): Promise<any> {
-  return request.post(UPDATE_WORK_SHIFT, {data: body});
+  return request.put(UPDATE_WORK_SHIFT, {data: body});
 }
 
 export function getUpdateWorkShift(id: number): Promise<any> {
-  return request.get(`${UPDATE_WORK_SHIFT}/${id}`);
+  return request.get(`${REQUESTED}/${id}/get`);
 }
 
 export async function getRequestedList(params?: any): Promise<any>  {
@@ -60,6 +60,14 @@ export async function getApproveList(params?: any): Promise<any>  {
   const date = new Date()
   const result = await request.get(`${GET_LIST_APPROVE}?month=${date.getMonth()}-${date.getFullYear()}`);
   return {...params, data: Object.values(result), success: true};
+}
+
+export async function approveRequest(id: number): Promise<any> {
+  return request.put(`${REQUESTED}/${id}/approve`);
+}
+
+export async function rejectRequest(id: number): Promise<any> {
+  return request.put(`${REQUESTED}/${id}/reject`);
 }
 
 export async function getCheckIn(id: number) {

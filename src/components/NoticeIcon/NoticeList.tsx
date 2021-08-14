@@ -4,6 +4,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { NoticeIconData } from './index';
 import styles from './NoticeList.less';
+import { formatMessage } from '@/.umi/plugin-locale/localeExports';
 
 export interface NoticeIconTabProps {
   count?: number;
@@ -74,14 +75,14 @@ const NoticeList: React.SFC<NoticeIconTabProps> = ({
                 avatar={leftIcon}
                 title={
                   <div className={styles.title}>
-                    {item.title}
+                    {formatMessage({ id: 'notification.title.' + item.title })}
                     <div className={styles.extra}>{item.extra}</div>
                   </div>
                 }
                 description={
                   <div>
-                    <div className={styles.description}>{item.description}</div>
-                    <div className={styles.datetime}>{item.datetime}</div>
+                    <div className={styles.description}>{formatMessage({ id: 'notification.msg.' + item.msg })}</div>
+                    <div className={styles.datetime}>{item.date}</div>
                   </div>
                 }
               />
@@ -92,7 +93,7 @@ const NoticeList: React.SFC<NoticeIconTabProps> = ({
       <div className={styles.bottomBar}>
         {showClear ? (
           <div onClick={onClear}>
-            {clearText} {title}
+            {clearText}
           </div>
         ) : null}
         {showViewMore ? (
