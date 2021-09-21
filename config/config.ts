@@ -60,22 +60,6 @@ export default defineConfig({
               component: './Welcome',
             },
             {
-              path: '/admin',
-              name: 'admin',
-              icon: 'crown',
-              component: './Admin',
-              authority: ['admin'],
-              routes: [
-                {
-                  path: '/admin/sub-page',
-                  name: 'sub-page',
-                  icon: 'smile',
-                  component: './Welcome',
-                  authority: ['admin'],
-                },
-              ],
-            },
-            {
               path: '/users',
               name: 'users',
               icon: 'user',
@@ -99,7 +83,7 @@ export default defineConfig({
               path: '/settings',
               name: 'settings',
               icon: 'setting',
-              authority: ['admin'],
+              authority: ['admin', 'user'],
               routes: [
                 {
                   name: 'time',

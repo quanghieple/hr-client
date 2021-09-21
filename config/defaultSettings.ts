@@ -16,7 +16,7 @@ const proSettings: DefaultSettings = {
   menu: {
     locale: true,
   },
-  title: 'HR Solution',
+  title: 'Health Tracking',
   pwa: false,
   iconfontUrl: '',
 };

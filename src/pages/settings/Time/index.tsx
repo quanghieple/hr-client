@@ -36,19 +36,7 @@ class Time extends Component<
   constructor(props: TimeProps) {
     super(props);
     const menuMap = {
-      location: <FormattedMessage id="settings.menuMap.location" defaultMessage="Location Settings" />,
-      // security: (
-      //   <FormattedMessage id="settingsandtime.menuMap.security" defaultMessage="Security Settings" />
-      // ),
-      // binding: (
-      //   <FormattedMessage id="settingsandtime.menuMap.binding" defaultMessage="Account Binding" />
-      // ),
-      // notification: (
-      //   <FormattedMessage
-      //     id="settingsandtime.menuMap.notification"
-      //     defaultMessage="New Message Notification"
-      //   />
-      // ),
+      binding: "Món Ăn"
     };
     this.state = {
       mode: 'inline',
@@ -127,31 +115,9 @@ class Time extends Component<
     if (!currentUser.uid) {
       return '';
     }
-    const { mode, selectKey } = this.state;
     return (
       <GridContent>
-        <div
-          className={styles.main}
-          ref={(ref) => {
-            if (ref) {
-              this.main = ref;
-            }
-          }}
-        >
-          <div className={styles.leftMenu}>
-            <Menu
-              mode={mode}
-              selectedKeys={[selectKey]}
-              onClick={({ key }) => this.selectKey(key as TimeStateKeys)}
-            >
-              {this.getMenu()}
-            </Menu>
-          </div>
-          <div className={styles.right}>
-            <div className={styles.title}>{this.getRightTitle()}</div>
-            {this.renderChildren()}
-          </div>
-        </div>
+        <BindingView />
       </GridContent>
     );
   }

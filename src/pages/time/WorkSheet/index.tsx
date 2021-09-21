@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { Badge, Calendar, Tooltip } from "antd";
-import { connect, formatMessage } from "umi";
+import { Badge, Calendar, Drawer, Tag } from "antd";
+import { connect } from "umi";
 import { ConnectState } from "@/models/connect";
 import { CurrentUser } from "@/data/database";
-import { currentDiff, timeDiff } from "@/utils/date";
-import { getMonth } from "@/services/checkin";
+import { getListMeal, getTrackingThisMonth } from "@/services/checkin";
+import MealHistory from "../MealHistory";
+import moment from "moment";
 
 interface WorkSheetProps {
     currentUser: CurrentUser;
@@ -14,7 +15,13 @@ interface WorkSheetProps {
 interface WorkSheetState {
     current: any;
     shifts: any;
-    month: any
+    month: number;
+    year: number;
+    data: {};
+    meal: {};
+    item: any;
+    openDraw: boolean;
+    time: any;
 }
 
 class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
@@ -24,8 +31,24 @@ class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
         this.state = {
             current: props.currentMonth,
             shifts: {"morning": "success", "evening": "warning", "night": "error"},
-            month: new Date().getMonth()
+            month: new Date().getMonth(),
+            year: new Date().getFullYear(),
+            data: {},
+            meal: {},
+            item: {},
+            openDraw: false,
+            time: moment()
         }
+    }
+
+    componentDidMount = () => {
+      getTrackingThisMonth(this.state.month, this.state.year).then((tm) => {
+        this.setState({data: tm});
+      })
+
+      getListMeal().then((list) => {
+        this.setState({meal: list});
+      })
     }
 
     getTimeCheck(time: number) {
@@ -33,28 +56,26 @@ class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
         return `${date.getHours()}h:${date.getMinutes()}m`
     }
 
+    isSmall = () => window.innerWidth < 800
+
+    renderDot = (meal: any) => {
+      if(this.isSmall()) {
+        return <Badge color={meal.color} />
+      } else {
+        return <Tag color={meal.color}>{meal.title}</Tag>
+      }
+    }
+
     dateCellRender = (value: any) => {
-        const { current, shifts, month } = this.state
+        const { data, meal, month } = this.state
         if (month != value.month()) return null;
-        let data = current[value.date().toString()]
-        if (data) {
+        let currentDate = data[value.date().toString()]
+        if (currentDate) {
             return (
-                <ul className="events" style={{paddingLeft: '5px'}}>
-                    {Object.keys(data).map(item => (
-                        <li key={item}>
-                            {data[item].out ? (
-                                <Tooltip title={`${formatMessage({id: 'checkin.shift'})} ${item} (${timeDiff(data[item].in, data[item].out)})`}>
-                                    <Badge status={shifts[item] || 'success'} text={`${this.getTimeCheck(data[item].in)} - ${this.getTimeCheck(data[item].out)}`} />
-                                </Tooltip>
-                            ) : (
-                                <Tooltip title={`${formatMessage({id: 'checkin.shift'})} ${item} (${currentDiff(data[item].in)})`}>
-                                    <Badge status={shifts[item] || 'success'} text={`${this.getTimeCheck(data[item].in)} - current`} />
-                                </Tooltip>
-                            )}
-                        </li>
-                    ))}
-                </ul>
-            );
+              <div style={{display: this.isSmall() ? 'flex' : 'block' }} onClick={() => this.setState({ item: currentDate, openDraw: true, time: value })}>
+                {Object.keys(currentDate).map(item => this.renderDot(meal[currentDate[item].meal] || {}))}
+              </div>
+            )
         } else return null
     }
 
@@ -63,18 +84,24 @@ class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
     }
 
     handleChange = (value: any) => {
-        let time = new Date()
-        if (value.year() == time.getFullYear() && value.month() == time.getMonth()) {
-            this.setState({current: this.props.currentMonth, month: time.getMonth()})
-        } else {
-            getMonth(value.year(), value.month()).then((snap) => {
-                this.setState({current: snap.val() || {}, month: value.month()})
-            })
-        }
+      getTrackingThisMonth(this.state.month, this.state.year).then((tm) => {
+        this.setState({data: tm, month: value.month(), year: value.year()});
+      })
     }
     render() {
-        return (
+      return (
+          <>
             <Calendar dateCellRender={this.dateCellRender} monthCellRender={this.monthCellRender} onChange={this.handleChange} />
+            <Drawer
+              title={`Lịch sử ${this.state.time.format('DD/MM/YYYY')}`}
+              width={'min(95vw, 800px)'}
+              placement="right"
+              onClose={() => this.setState({ openDraw: false })}
+              visible={this.state.openDraw}
+            >
+              <MealHistory list={Object.values(this.state.item)} meals={this.state.meal || {}}/>
+            </Drawer>
+          </>
         )
     }
 }

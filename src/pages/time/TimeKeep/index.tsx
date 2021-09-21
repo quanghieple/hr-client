@@ -24,10 +24,10 @@ class TimeKeep extends Component<TimeKeepProps> {
     return (
       <PageContainer title={false}>
         <Tabs defaultActiveKey="1" onChange={this.handleTabChange}>
-          <TabPane tab="Check In/Out" key="1">
+          <TabPane tab="Thêm bữa ăn" key="1">
             <CheckIn />
           </TabPane>
-          <TabPane tab="Work Sheet" key="2">
+          <TabPane tab="Tracking tháng" key="2">
             <WorkSheet />
           </TabPane>
         </Tabs>
