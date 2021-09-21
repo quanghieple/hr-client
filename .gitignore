@@ -38,6 +38,6 @@ screenshot
 .eslintcache
 
 # firebase config
-config/firebase.ts
+# config/firebase.ts
 
 build
