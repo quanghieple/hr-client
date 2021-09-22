@@ -15,8 +15,7 @@ const SketchExample = (props: any) => {
   };
 
   const handleChange = (color: any) => {
-    console.log(color);
-    setColor(color.rgb);
+    setColor(color.hex);
   };
 
     const styles = reactCSS({
@@ -25,7 +24,7 @@ const SketchExample = (props: any) => {
           width: '36px',
           height: '14px',
           borderRadius: '2px',
-          background: `rgba(${ color.r }, ${ color.g }, ${ color.b }, ${ color.a })`,
+          background: `${color}`,
         },
         swatch: {
           padding: '5px',

@@ -11,7 +11,8 @@ const MealHistory = (props: any) => {
   const toItem = (url: string) => ({
     original: url,
     thumbnail: url,
-    originalHeight: 200
+    originalHeight: 200,
+    thumbnailHeight: 60
   })
 
   const tohhmm = (milliseconds: any) => moment(milliseconds).format('HH:mm')
@@ -27,7 +28,7 @@ const MealHistory = (props: any) => {
                 <>
                   <span style={{color: 'black'}}>{tohhmm(item.time)} - <Tag color={(meals[item.meal] || {}).color}>{(meals[item.meal] || {}).title}</Tag></span>
                   <p style={{fontStyle: 'italic', color: 'black'}}>{item.note ? "* " + item.note : "" }</p>
-                  <ImageGallery autoPlay showIndex showThumbnails thumbnailPosition="bottom" items={item.images.map((i: any) => toItem(i))} />
+                  <ImageGallery autoPlay showIndex thumbnailPosition="bottom" items={item.images.map((i: any) => toItem(i))} />
                 </>
               )}
             />

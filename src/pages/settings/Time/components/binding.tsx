@@ -1,5 +1,5 @@
-import { UploadOutlined } from '@ant-design/icons';
-import { Input, List, Form, Upload, Button, message } from 'antd';
+import { EditOutlined, UploadOutlined } from '@ant-design/icons';
+import { Input, List, Form, Upload, Button, message, Tag } from 'antd';
 import React, { Fragment } from 'react';
 import { getListMeal, uploadMealImage, writeMealData } from '@/services/checkin';
 import { getDownloadUrl } from '@/services/firebase';
@@ -9,8 +9,9 @@ const BindingView = () => {
   const [form] = Form.useForm();
   const [data, setData] = React.useState<any[]>([]);
   const [saving, setSaving] = React.useState(false);
-  const [color, setColor] = React.useState({ r: '241', g: '112', b: '19', a: '1', });
+  const [color, setColor] = React.useState("#da6323");
   const [id, setId] = React.useState<number>(0);
+  const [url, setUrl] = React.useState(null);
 
   React.useEffect(() => {
     getListMeal().then((list) => {
@@ -18,28 +19,9 @@ const BindingView = () => {
     })
   }, [])
 
-  const rgba2hex = (rbga: any) => {
-    let { r, g, b, a } = rbga;
-    r = r.toString(16);
-    g = g.toString(16);
-    b = b.toString(16);
-    a = Math.round(a * 255).toString(16);
-
-    if (r.length == 1)
-      r = "0" + r;
-    if (g.length == 1)
-      g = "0" + g;
-    if (b.length == 1)
-      b = "0" + b;
-    if (a.length == 1)
-      a = "0" + a;
-
-    return "#" + r + g + b + a;
-  }
-
   const onFinish = async (val: any) => {
     setSaving(true);
-    let downUrl = null
+    let downUrl = url;
     if (val.images) {
       const upload = await uploadMealImage(val.images[0].originFileObj)
       if(upload.state === "success") {
@@ -48,13 +30,16 @@ const BindingView = () => {
         message.error("úp hình lỗi rồi :(")
       }
     }
-    writeMealData({id: id || new Date().getTime(),avatar: downUrl, title: val.name, description: val.note || "", color: rgba2hex(color)}).then(() => {
+    writeMealData({id: id || new Date().getTime(),avatar: downUrl, title: val.name, description: val.note || "", color }).then(() => {
       message.info("Lưu thèn công");
       setSaving(false);
-      form.resetFields();
       getListMeal().then((list) => {
         setData(Object.values(list));
       })
+
+      form.resetFields();
+      setId(0);
+      setUrl(null);
     })
   }
 
@@ -64,6 +49,13 @@ const BindingView = () => {
     }
     return e && e.fileList;
   };
+
+  const update = (item: any) => {
+    setId(item.id);
+    form.setFieldsValue({name: item.title, note: item.description});
+    setColor(item.color);
+    setUrl(item.avatar)
+  }
 
   return (
     <Fragment>
@@ -107,7 +99,7 @@ const BindingView = () => {
           getValueFromEvent={normFile}
           rules={[
             {
-              required: true,
+              required: !url,
               message: "thêm hình dùm",
             },
           ]}
@@ -126,10 +118,10 @@ const BindingView = () => {
         itemLayout="horizontal"
         dataSource={data}
         renderItem={(item) => (
-          <List.Item actions={item.actions}>
+          <List.Item actions={[<EditOutlined onClick={() => update(item)} style={{ fontSize: '25px' }} />]}>
             <List.Item.Meta
               avatar={<img style={{width: '150px', height: 'auto'}} src={item.avatar} />}
-              title={item.title}
+              title={<Tag color={item.color}>{item.title}</Tag>}
               description={item.description}
             />
           </List.Item>

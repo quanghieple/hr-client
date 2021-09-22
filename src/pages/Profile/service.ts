@@ -7,7 +7,8 @@ import request from 'umi-request';
 
 export async function queryCurrent(): Promise<any> {
   let user = await currentUser();
-  return getProfile(user.uid);
+  const db = await getProfile(user.uid);
+  return {...db.val(), ...user};
 }
 
 export async function queryUser(id: string): Promise<any> {
@@ -28,14 +29,14 @@ export async function query() {
 
 export async function getUserForUpdate(): Promise<CurrentUser>{
   const search = window.location.search.substring(1);
-  const params = new URLSearchParams(search); 
+  const params = new URLSearchParams(search);
   const id = params.get('id');
-  const isAdmin = getAuthority().includes("admin")
+  const isAdmin = getAuthority().includes("admin");
   if (id && isAdmin) {
     let query = await queryUser(id);
     return query.ok ? query.body : {};
   } else {
-    let query = await queryCurrent(); 
-    return query.val();
+    let query = await queryCurrent();
+    return query;
   }
 }
