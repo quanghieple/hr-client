@@ -94,7 +94,7 @@ class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
             <Calendar dateCellRender={this.dateCellRender} monthCellRender={this.monthCellRender} onChange={this.handleChange} />
             <Drawer
               title={`Lịch sử ${this.state.time.format('DD/MM/YYYY')}`}
-              width={'min(95vw, 800px)'}
+              width={'min(90vw, 600px)'}
               placement="right"
               onClose={() => this.setState({ openDraw: false })}
               visible={this.state.openDraw}

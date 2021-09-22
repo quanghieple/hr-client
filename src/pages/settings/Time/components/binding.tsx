@@ -48,7 +48,7 @@ const BindingView = () => {
         message.error("úp hình lỗi rồi :(")
       }
     }
-    writeMealData({id: id || new Date().getTime(),avatar: downUrl, title: val.name, description: val.note, color: rgba2hex(color)}).then(() => {
+    writeMealData({id: id || new Date().getTime(),avatar: downUrl, title: val.name, description: val.note || "", color: rgba2hex(color)}).then(() => {
       message.info("Lưu thèn công");
       setSaving(false);
       form.resetFields();

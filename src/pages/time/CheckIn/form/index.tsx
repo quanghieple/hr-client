@@ -26,18 +26,20 @@ const BindingView = () => {
   const onFinish = async (val: any) => {
     setSaving(true);
     let downUrl: string[] = []
+    let rawUrl: string[] = [];
     if (val.images) {
       for (let i = 0; i < val.images.length; i++) {
         const image = val.images[i];
         const upload = await uploadMealImage(image.originFileObj)
         if(upload.state === "success") {
+          rawUrl.push(upload.metadata.fullPath)
           downUrl.push(await getDownloadUrl(upload.metadata.fullPath));
         } else {
           message.error("úp hình lỗi rồi :(")
         }
       }
     }
-    writeTracking({tracking: {images: downUrl, meal: val.meal, note: val.note}}).then(() => {
+    writeTracking({tracking: {images: downUrl, meal: val.meal, note: val.note || "", pathImg: rawUrl}}).then(() => {
       message.info("Lưu thèn công");
       setSaving(false);
       form.resetFields()

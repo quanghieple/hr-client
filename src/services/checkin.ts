@@ -63,5 +63,6 @@ export const getTodayTracking = async () => {
 export const getTrackingThisMonth = async (month: number, year: number) => {
   let user = await currentUser();
   const val = await firebase.database().ref().child(`tracking/${user.uid}/${year}/${month}`).once("value");
+  console.log(val.val() || {})
   return val.val() || {};
 }
