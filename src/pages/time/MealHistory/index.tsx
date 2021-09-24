@@ -26,7 +26,11 @@ const MealHistory = (props: any) => {
             <List.Item.Meta
               description={(
                 <>
-                  <span style={{color: 'black'}}>{tohhmm(item.time)} - <Tag color={(meals[item.meal] || {}).color}>{(meals[item.meal] || {}).title}</Tag></span>
+                  <span style={{color: 'black'}}>
+                    {tohhmm(item.time) + " "}
+                    <Tag color={(meals[item.meal] || {}).color}>{(meals[item.meal] || {}).title}</Tag>
+                    {item.capacity ? " " + (item.capacity) + "ml" : ""}
+                  </span>
                   <p style={{fontStyle: 'italic', color: 'black'}}>{item.note ? "* " + item.note : "" }</p>
                   <ImageGallery autoPlay showIndex thumbnailPosition="bottom" items={item.images.map((i: any) => toItem(i))} />
                 </>

@@ -30,17 +30,27 @@ const BindingView = () => {
         message.error("úp hình lỗi rồi :(")
       }
     }
-    writeMealData({id: id || new Date().getTime(),avatar: downUrl, title: val.name, description: val.note || "", color }).then(() => {
+    delete val.images;
+    Object.keys(val).forEach(key => {
+      if (val[key] === null || val[key] === undefined) {
+        delete val[key];
+      }
+    })
+    writeMealData({id: id || new Date().getTime(),avatar: downUrl, color, ...val }).then(() => {
       message.info("Lưu thèn công");
       setSaving(false);
       getListMeal().then((list) => {
         setData(Object.values(list));
       })
 
-      form.resetFields();
-      setId(0);
-      setUrl(null);
+      formatForm();
     })
+  }
+
+  const formatForm = () => {
+    form.resetFields();
+    setId(0);
+    setUrl(null);
   }
 
   const normFile = (e: any) => {
@@ -52,7 +62,7 @@ const BindingView = () => {
 
   const update = (item: any) => {
     setId(item.id);
-    form.setFieldsValue({name: item.title, note: item.description});
+    form.setFieldsValue(item);
     setColor(item.color);
     setUrl(item.avatar)
   }
@@ -70,7 +80,7 @@ const BindingView = () => {
       >
         <Form.Item
           label="Tên"
-          name="name"
+          name="title"
           rules={[
             {
               required: true,
@@ -82,9 +92,37 @@ const BindingView = () => {
         </Form.Item>
         <Form.Item
           label="Mô tả"
-          name="note"
+          name="description"
         >
           <Input.TextArea />
+        </Form.Item>
+        <Form.Item label="Thông tin/100gr" style={{ marginBottom: 0 }}>
+          <Form.Item
+            name="calo"
+            style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+          >
+            <Input addonAfter="Calo" />
+          </Form.Item>
+          <Form.Item
+            name="fat"
+            style={{ display: 'inline-block', width: 'calc(50% - 8px)', margin: '0 8px' }}
+          >
+            <Input addonAfter="Béo" />
+          </Form.Item>
+        </Form.Item>
+        <Form.Item label="Thông tin/100gr" style={{ marginBottom: 0 }}>
+          <Form.Item
+            name="carb"
+            style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+          >
+            <Input addonAfter="Carb" />
+          </Form.Item>
+          <Form.Item
+            name="protein"
+            style={{ display: 'inline-block', width: 'calc(50% - 8px)', margin: '0 8px' }}
+          >
+            <Input addonAfter="Protein" />
+          </Form.Item>
         </Form.Item>
         <Form.Item
           label="Màu"
@@ -105,13 +143,24 @@ const BindingView = () => {
           ]}
         >
           <Upload maxCount={1} name="logo" action="/upload.do" listType="picture">
-            <Button icon={<UploadOutlined />}>Hình của nó</Button>
+            <Button type="ghost" icon={<UploadOutlined />}>Hình của nó</Button>
           </Upload>
         </Form.Item>
         <Form.Item wrapperCol={{ span: 14, offset: 4 }}>
-          <Button type="primary" htmlType="submit" loading={saving}>
-            Lưu thôi
-          </Button>
+          {id ? (
+            <>
+              <Button type="primary" htmlType="submit" loading={saving}>
+                Lưu thay đổi
+              </Button>
+              <Button type="default" style={{marginLeft: '10px'}} htmlType="button" onClick={formatForm} loading={saving}>
+                Thôi thay đổi
+              </Button>
+            </>
+          ) : (
+            <Button type="primary" htmlType="submit" loading={saving}>
+              Lưu thôi
+            </Button>
+          )}
         </Form.Item>
       </Form>
       <List

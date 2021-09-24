@@ -5,6 +5,7 @@ import React from 'react';
 import { ConnectState } from '@/models/connect';
 import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
+import proSettings from '../../config/defaultSettings';
 
 export interface UserLayoutProps extends Partial<ConnectProps> {
   breadcrumbNameMap: {
@@ -49,7 +50,7 @@ const UserLayout: React.FC<UserLayoutProps> = (props) => {
             <div className={styles.header}>
               <Link to="/">
                 <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>HR Solution - Login</span>
+                <span className={styles.title}>{proSettings.title} - Login</span>
               </Link>
             </div>
           </div>

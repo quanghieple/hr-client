@@ -1,6 +1,5 @@
-import { formatMessage } from 'umi';
 import { UploadOutlined } from '@ant-design/icons';
-import { Input, Form, Upload, Button, message, Select } from 'antd';
+import { Input, Form, Upload, Button, message, Select, Slider } from 'antd';
 import React, { Fragment } from 'react';
 import { getListMeal, getTodayTracking, uploadMealImage, writeTracking } from '@/services/checkin';
 import { getDownloadUrl } from '@/services/firebase';
@@ -12,6 +11,7 @@ const BindingView = () => {
   const [data, setData] = React.useState<any>({});
   const [today, setToday] = React.useState<any[]>([]);
   const [saving, setSaving] = React.useState(false);
+  const [capacity, setCapacity] = React.useState(500);
 
   React.useEffect(() => {
     getListMeal().then((list) => {
@@ -39,7 +39,7 @@ const BindingView = () => {
         }
       }
     }
-    writeTracking({tracking: {images: downUrl, meal: val.meal, note: val.note || "", pathImg: rawUrl}}).then(() => {
+    writeTracking({tracking: {images: downUrl, meal: val.meal, note: val.note || "", pathImg: rawUrl, capacity}}).then(() => {
       message.info("Lưu thèn công");
       setSaving(false);
       form.resetFields()
@@ -54,6 +54,19 @@ const BindingView = () => {
       return e;
     }
     return e && e.fileList;
+  };
+
+  const marks = {
+    0: '0',
+    200: '200ml',
+    500: '500ml',
+    750: '750ml',
+    1000: {
+      style: {
+        color: '#f50',
+      },
+      label: <strong>1000ml</strong>,
+    },
   };
 
   return (
@@ -72,7 +85,7 @@ const BindingView = () => {
             rules={[
                 {
                   required: true,
-                  message: formatMessage({id: 'checkin.form.shift.required'}),
+                  message: "chọn món pạn ơi!",
                 },
               ]}
         >
@@ -81,6 +94,13 @@ const BindingView = () => {
                     return <Option value={key} >{data[key].title}</Option>
                 })}
             </Select>
+        </Form.Item>
+        <Form.Item
+            label="Bao nhiêu"
+            name="capacity"
+        >
+            <Slider marks={marks} step={100} defaultValue={500} value={capacity} min={0} max={1000}
+                    onChange={setCapacity} />
         </Form.Item>
         <Form.Item
           label="chú thích hơm"

@@ -27,7 +27,7 @@ class TimeKeep extends Component<TimeKeepProps> {
           <TabPane tab="Thêm bữa ăn" key="1">
             <CheckIn />
           </TabPane>
-          <TabPane tab="Tracking tháng" key="2">
+          <TabPane tab="Xem tháng" key="2">
             <WorkSheet />
           </TabPane>
         </Tabs>

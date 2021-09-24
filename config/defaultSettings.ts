@@ -16,7 +16,7 @@ const proSettings: DefaultSettings = {
   menu: {
     locale: true,
   },
-  title: 'Health Tracking',
+  title: 'Meal Tracking',
   pwa: false,
   iconfontUrl: '',
 };
