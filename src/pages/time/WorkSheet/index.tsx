@@ -88,6 +88,15 @@ class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
         this.setState({data: tm, month: value.month(), year: value.year()});
       })
     }
+
+    onNext = () => {
+
+    }
+
+    onPrev = () => {
+
+    }
+
     render() {
       return (
           <>
@@ -99,7 +108,7 @@ class WorkSheet extends Component<WorkSheetProps, WorkSheetState> {
               onClose={() => this.setState({ openDraw: false })}
               visible={this.state.openDraw}
             >
-              <MealHistory list={Object.values(this.state.item)} meals={this.state.meal || {}}/>
+              <MealHistory list={Object.values(this.state.item)} meals={this.state.meal || {}} onNext={this.onNext} onPrev={this.onPrev}/>
             </Drawer>
           </>
         )

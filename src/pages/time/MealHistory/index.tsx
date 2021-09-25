@@ -1,4 +1,4 @@
-import { List, Tag } from "antd";
+import { Button, List, Tag } from "antd";
 import moment from "moment";
 import React from "react"
 import ImageGallery from 'react-image-gallery';
@@ -6,13 +6,15 @@ import ImageGallery from 'react-image-gallery';
 import "react-image-gallery/styles/css/image-gallery.css";
 
 const MealHistory = (props: any) => {
-  const { list, meals } = props;
+  const { list, meals, onPrev, onNext, buttonNext } = props;
+  const [fullScreen, serFullScreen] = React.useState(false);
 
   const toItem = (url: string) => ({
     original: url,
     thumbnail: url,
-    originalHeight: 200,
-    thumbnailHeight: 60
+    thumbnailHeight: 60,
+    fullScreen: "full",
+    ... fullScreen ? {} : {originalHeight: 200}
   })
 
   const tohhmm = (milliseconds: any) => moment(milliseconds).format('HH:mm')
@@ -32,7 +34,14 @@ const MealHistory = (props: any) => {
                     {item.capacity ? " " + (item.capacity) + "ml" : ""}
                   </span>
                   <p style={{fontStyle: 'italic', color: 'black'}}>{item.note ? "* " + item.note : "" }</p>
-                  <ImageGallery autoPlay showIndex thumbnailPosition="bottom" items={item.images.map((i: any) => toItem(i))} />
+                  <ImageGallery onScreenChange={serFullScreen} autoPlay showIndex thumbnailPosition={fullScreen ? "right" : "bottom"} items={item.images.map((i: any) => toItem(i))} />
+
+                  {buttonNext && (
+                    <div style={{float: 'right', marginTop: '20px'}}>
+                      <Button onClick={onPrev} type="primary" style={{marginRight: '10px'}}>Trước</Button>
+                      <Button onClick={onNext} type="primary" >Sau</Button>
+                    </div>
+                  )}
                 </>
               )}
             />
