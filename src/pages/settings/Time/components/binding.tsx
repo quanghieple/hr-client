@@ -15,7 +15,7 @@ const BindingView = () => {
 
   React.useEffect(() => {
     getListMeal().then((list) => {
-      setData(Object.values(list));
+      setData(Object.values(list).reverse());
     })
   }, [])
 

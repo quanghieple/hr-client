@@ -90,7 +90,7 @@ const BindingView = () => {
               ]}
         >
             <Select defaultActiveFirstOption={true}>
-                {Object.keys(data).map(key => {
+                {Object.keys(data).reverse().map(key => {
                     return <Option value={key} >{data[key].title}</Option>
                 })}
             </Select>
